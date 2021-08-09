@@ -1,18 +1,15 @@
 import React, { Component } from 'react';
+import CMap from './CMap'
 
 class RegisterDelivery extends Component {
 	render() {
 		return (
 			<>
-				<div style={{ float: 'right' }}>
-					<button
-						type="button"
-						className="btn my-2 my-sm-0" 
-						data-toggle="modal"
-						style={{ background: '#82CAFA', color : 'white' }}
-					>
-						Register Delivery
-					</button>
+				<div>
+					<CMap
+						healthState={new Map<0, 0>()}
+						batteryState={new Map<0, 0>()}
+					></CMap>
 				</div>
 			</>
 		);

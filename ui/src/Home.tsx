@@ -1,6 +1,6 @@
 import React,{ Component } from 'react';
 import Iframe from 'react-iframe';
-import NodeMap from './ManagementComponents/NodeMap';
+import HomeMap from './HomeMap'
 import { KIBANA_DASHBOARDS_URL } from './defineUrl';
 import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 
@@ -12,10 +12,10 @@ function Home() {
 	const dashboardUrl: string = KIBANA_DASHBOARDS_URL;
 	return (
 		<div>
-			<NodeMap 
+			<HomeMap 
 				healthState={new Map<0, 0>()}
 				batteryState={new Map<0, 0>()}
-			></NodeMap>
+			></HomeMap>
 		</div>
 		/*
 		<div

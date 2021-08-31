@@ -19,25 +19,6 @@ interface invoiceNumber {
 }
 
 function DeliveryConfirm(props:any) {
-    const [invoiceNumber, setinvoiceNumber] = useState("");
-
-    useEffect(() => {
-	    getDestinationTag(props.location.state.destinationTagId);
-	});
-
-	const getDestinationTag = (Id: number) => {
-		var url =
-			DELIVERY_URL + '?id=' + Id;
-    
-		const data = [];
-
-		fetch(url)
-			.then((res) => res.json()) 
-			.then((data) => setinvoiceNumber(data.invoiceNumber)
-			)
-			.catch((error) => console.error('Error:', error));
-	}
-
     const history = useHistory();
 
     const handleConfirm = () =>{
@@ -52,7 +33,7 @@ function DeliveryConfirm(props:any) {
                    <hr style={{width:"570px", borderColor:"black"}}></hr><br></br>
 				<div style={{textAlign:"left", marginLeft:"325px", fontSize:"23px"}}>
                        <label style={{color:"gray"}}>Invoice Number</label>
-                       <label style={{fontSize:"20px"}}>{invoiceNumber}</label><br></br>
+                       <label style={{marginLeft: "142px"}}>{props.location.state.invoiceNumber}</label><br></br>
                        <label style={{color:"gray", marginTop:"7px"}}>Destination Tag</label>
                        <label style={{marginLeft:"147px"}}>{props.location.state.destinationTagName}</label><br></br>
                        <label style={{color:"gray", marginTop:"7px"}}>Sender Name</label>

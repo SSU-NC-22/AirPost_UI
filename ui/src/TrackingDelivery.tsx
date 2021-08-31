@@ -16,7 +16,7 @@ class TrackingDelivery extends Component<{}, TrackingDeliveryState> {
 	}
 
 	handleNumberChange= (e: React.ChangeEvent<HTMLInputElement>) => {
-		const phExp = /^[0-9]{16}/;
+		const phExp = /^[0-9]{15}/;
 		if (e.target.value.match(phExp)) {
 			this.setState({
 				invoiceNumber: e.target.value,
@@ -37,7 +37,7 @@ class TrackingDelivery extends Component<{}, TrackingDeliveryState> {
 		var data = this.state;
 
 		if (!this.state.numberValid) {
-			alert('Please enter valid invoice number(16 numbers).');
+			alert('Please enter valid invoice number(15 numbers).');
 			return;
 		}
 
@@ -59,8 +59,8 @@ class TrackingDelivery extends Component<{}, TrackingDeliveryState> {
 	};
 
 	render() {
-		if (this.state.invoiceNumber && this.state.submit) {
-			return <Redirect to = {{ pathname:'/result'}}></Redirect> 
+		if (this.state.numberValid && this.state.submit) {
+			return <Redirect to = {{ pathname:'/result', state:{invoiceNumber:this.state.invoiceNumber}}}></Redirect> 
 		}
 		return (
 			<>

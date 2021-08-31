@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './ManagementComponents/NodeMap.css';
 import {DELIVERY_URL} from './defineUrl';
+import { useHistory, useLocation } from 'react-router-dom';
 
 declare global {
 	interface Window {
@@ -36,6 +37,7 @@ class TrackingResult extends Component<TrackingResultState> {
         droneLng:0,
         droneLat:0,
 	};
+
 	/*
     componentDidMount = () => {
 

@@ -130,7 +130,48 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 	};
 
 	makeInvoiceNumber() {
-		
+		const date = new Date();
+		var tempNum = "";
+		var tempMonth = 0;
+		var tempDate = 0;
+		var tempHours = 0;
+		var tempMinutes = 0;
+		var tempSeconds = 0;
+
+		tempNum += String(date.getFullYear());
+
+		tempMonth = date.getMonth();
+		if (tempMonth < 10) {
+			tempNum += "0";
+		}
+		tempNum += String(tempMonth);
+
+		tempDate = date.getDate();
+		if (tempDate < 10) { 
+			tempNum += "0";
+		}
+		tempNum += String(tempDate);
+		tempNum += String(date.getDay());
+
+		tempHours = date.getHours();
+		if (tempHours < 10) {
+			tempNum += "0";
+		}
+		tempNum += String(tempHours);
+
+		tempMinutes = date.getMinutes();
+		if (tempMinutes < 10) {
+			tempNum += "0";
+		}
+		tempNum += String(tempMinutes);
+
+		tempSeconds = date.getSeconds();
+		if (tempSeconds < 10) {
+			tempNum += "0";
+		}
+		tempNum += tempSeconds;
+
+		this.setState({invoiceNumber:tempNum});
 	}
 
 	handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -173,11 +214,12 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 		fetch(url, {
 			method: 'POST', // or 'PUT'
 			body: JSON.stringify({
-				senderName: this.state.senderName,
-				recipientName: this.state.recipientName,
-				senderPn: this.state.senderPn,
-				recipientPn: this.state.recipientPn,
-				destinationTagId: this.state.destinationTagId,
+				order_num: this.state.invoiceNumber,
+				src_name: this.state.senderName,
+				src_phone: this.state.senderPn,
+				dest_name: this.state.recipientName,
+				dest_phone: this.state.recipientPn,
+				dest_station_id: this.state.destinationTagId,
 			}),
 			headers: {
 				'Content-Type': 'application/json',
@@ -201,7 +243,7 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 		*/}
 
 		if(this.state.sNameValid && this.state.rNameValid && this.state.sNameValid && this.state.rNumberValid && this.state.destValid&& this.state.submit) {
-			return <Redirect to = {{ pathname:'/confirm', state:{ senderName:this.state.senderName, senderPn:this.state.senderPn, recipientName:this.state.recipientName, recipientPn:this.state.recipientPn, destinationTagId:this.state.destinationTagId, destinationTagName:this.state.destinationTagName}}}></Redirect> 
+			return <Redirect to = {{ pathname:'/confirm', state:{ senderName:this.state.senderName, senderPn:this.state.senderPn, recipientName:this.state.recipientName, recipientPn:this.state.recipientPn, destinationTagId:this.state.destinationTagId, destinationTagName:this.state.destinationTagName, invoiceNumber:this.state.invoiceNumber}}}></Redirect> 
 			//(<DeliveryConfirm senderName={this.state.senderName} senderPn={this.state.senderPn} recipientName={this.state.recipientName} recipientPn={this.state.recipientPn} destinationTagId={this.state.destinationTagId} destinationTagName={this.state.destinationTagName}></DeliveryConfirm>);
 		}
 

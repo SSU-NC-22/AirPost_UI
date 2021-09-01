@@ -78,7 +78,7 @@ class MapNodeTable extends Component<MapNodeTableProps, {}> {
 								<th scope="row">{idx}</th>
 								<td>{node.name}</td>
 								<td>{node.id}</td>
-								<td>{node.sensors.map((sensor: any) => sensor.name + ', ')}</td>
+								<td>{node.sensor_values.map((sensor: any) => sensor.name + ', ')}</td>
 								{this.findNodeState(node.id)}
 								{this.findNodeBattery(node.id)}
 								<td>

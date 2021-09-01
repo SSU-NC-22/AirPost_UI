@@ -170,6 +170,7 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 			tempNum += "0";
 		}
 		tempNum += tempSeconds;
+		tempNum = String(tempNum);
 
 		this.setState({invoiceNumber:tempNum});
 	}
@@ -215,6 +216,7 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 			method: 'POST', // or 'PUT'
 			body: JSON.stringify({
 				order_num: this.state.invoiceNumber,
+				drone_id: 1,
 				src_name: this.state.senderName,
 				src_phone: this.state.senderPn,
 				dest_name: this.state.recipientName,

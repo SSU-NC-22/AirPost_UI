@@ -7,7 +7,7 @@ export interface nodeListElem {
 	alt: number;
 	sink_id: number;
 	sink: Array<sinkListElem>;
-	sensors: Array<value_list_elem>;
+	sensor_values: Array<value_list_elem>;
 	//Logics:[];
 }
 

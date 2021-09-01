@@ -192,7 +192,7 @@ class NodeMap extends Component<NodeMapProps, NodeMapState> {
 					'sink : ' + node.sink_id,
 					'id : ' + node.id,
 					'sensor : ' +
-						node.sensors.map((sensor: value_list_elem) => sensor.value_name+', '),
+						node.sensor_values.map((sensor: value_list_elem) => sensor.value_name+', '),
 				],
 				latlng: new window.kakao.maps.LatLng(node.lat, node.lng),
 			};

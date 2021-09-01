@@ -228,7 +228,7 @@ class RegisterNode extends Component<{}, RegisterNodeState> {
 				lat: data.location.lat,
 				lng: data.location.lng,
 				sink_id: data.sink_id,
-				sensors: data.valueList,
+				sensor_values: data.valueList,
 			}),
 			headers: {
 				'Content-Type': 'application/json',

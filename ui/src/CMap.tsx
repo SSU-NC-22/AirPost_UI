@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './ManagementComponents/NodeMap.css';
 import { NODE_URL } from './defineUrl';
+import { tagOptionsElem } from './ElemInterface/ElementsInterface';
 
 // 참고 : https://apis.map.kakao.com/web/sample/multipleMarkerEvent/
 
@@ -9,6 +10,8 @@ import {
 	value_list_elem,
 	nodeHealthCheckElem,
 } from './ElemInterface/ElementsInterface';
+import { makeArray } from 'jquery';
+import { defaultProps } from 'react-select/src/Select';
 
 declare global {
 	interface Window {
@@ -19,6 +22,8 @@ declare global {
 interface NodeMapProps {
 	healthState: Map<number, number>;
 	batteryState: Map<number, number>;
+	getsourceList: Function;
+	getdestList: Function;
 }
 
 interface NodeMapState {
@@ -29,6 +34,7 @@ interface NodeMapState {
 	up: number;
 	down: number;
 }
+
 
 class NodeMap extends Component<NodeMapProps, NodeMapState> {
 	state: NodeMapState = {
@@ -89,6 +95,7 @@ class NodeMap extends Component<NodeMapProps, NodeMapState> {
 			);
 		});
 	};
+	
 	// Get node list from backend
 	getnodeList(left: number, right: number, up: number, down: number) {
 		var url =
@@ -107,6 +114,14 @@ class NodeMap extends Component<NodeMapProps, NodeMapState> {
 			.catch((error) => console.error('Error:', error));
 	}
 
+	setsource(data:any) {
+		this.props.getsourceList(data);
+	}
+
+	setdest(data:any) {
+		this.props.getdestList(data);
+	}
+
 	// Make Marker
 	displayMarker(position: any, map: any) {
 		// 마커를 생성합니다
@@ -115,76 +130,149 @@ class NodeMap extends Component<NodeMapProps, NodeMapState> {
 			position: position.latlng, // 마커의 위치
 		});*/
 
-		var marker = this.addMarker(position, map)
-
+		var stationmarker = this.addstationMarker(position, map);
+		var dronemarker = this.adddroneMarker(position, map);
+		var tagmarker = this.addtagMarker(position, map);
+		var tag:tagOptionsElem;
+		tag = {label:'', id:0};
+		tag.label = position.title;
+		tag.id = position.id;
+		
 		// 마커에 표시할 custom overlay를 생성합니다
-		var customOverlay = new window.kakao.maps.CustomOverlay({
-			position: marker.getPosition(),
-		});
+		if (stationmarker != null) {
+			var ScustomOverlay = new window.kakao.maps.CustomOverlay({
+				position: stationmarker.getPosition(),
+			});
 
-		var content = document.createElement('div');
-		
-		var title = document.createElement('div');
-		title.innerHTML = '';
-		title.className = 'title';
-		title.setAttribute('style', 'background: #82CAFA;')
-		
-		var closeBtn = document.createElement('button');
+			var Scontent = document.createElement('div');
 
-		closeBtn.onclick = function () {
-			customOverlay.setMap(null);
-		};
-		closeBtn.className = 'close';
-		closeBtn.type = 'button';
-		
-		title.appendChild(closeBtn);
-		
-		var body = document.createElement('div');
-		var bodytextAv = document.createElement('div');
-		var bodytextBa = document.createElement('div');
-		bodytextAv.appendChild(document.createTextNode('Available: O'));
-		bodytextBa.appendChild(document.createTextNode('Battery: 77%'));
-		body.insertAdjacentElement('beforeend', bodytextAv);
-		body.insertAdjacentElement('beforeend', bodytextBa);
+			var Stitle = document.createElement('div');
+			Stitle.innerHTML = 'station for start point';
+			Stitle.className = 'title';
+			Stitle.setAttribute('style', 'background: #82CAFA;');
 
-		var bodyElem = document.createElement('button');
-		bodyElem.className = 'btn'
-		bodyElem.setAttribute('style', 'background: #82CAFA; color : white; margin: 0 0 0 130px');
-		bodyElem.appendChild(document.createTextNode('Register Delivery'));
-		body.insertAdjacentElement('beforeend', bodyElem);
+			var ScloseBtn = document.createElement('button');
 
-		body.className = 'body';
-		body.setAttribute('style', 'margin: 35px 0 0 0');
+			ScloseBtn.onclick = function () {
+				ScustomOverlay.setMap(null);
+			};
+			ScloseBtn.className = 'close';
+			ScloseBtn.type = 'button';
 
-		var info = document.createElement('div');
-		info.className = 'info';
-		
-		info.insertAdjacentElement('afterbegin', title);
-		
-		var wrap = document.createElement('div');
-		wrap.className = 'wrap';
-		
-		wrap.insertAdjacentElement('afterbegin', info);
-		
-		closeBtn.insertAdjacentElement('afterend', body);
-		
-		content.insertAdjacentElement('afterbegin', wrap);
+			Stitle.appendChild(ScloseBtn);
 
-		customOverlay.setContent(content);
+			var Sbody = document.createElement('div');
+			var SbodytextAv = document.createElement('div');
+			var SbodytextBa = document.createElement('div');
+			SbodytextAv.appendChild(document.createTextNode('Available: O'));
+			Sbody.insertAdjacentElement('beforeend', SbodytextAv);
+			Sbody.insertAdjacentElement('beforeend', SbodytextBa);
 
-		window.kakao.maps.event.addListener(marker, 'click', function () {
-			customOverlay.setMap(map);
-		});
+			var SbodyElem = document.createElement('button');
+			SbodyElem.className = 'btn'
+			SbodyElem.setAttribute('style', 'background: #82CAFA; color : white; margin: 10px 0 0 0; font-size: 18px; padding: 0 5px');
+			SbodyElem.appendChild(document.createTextNode('set this station to start point'));
+			
+			SbodyElem.onclick = () => this.setsource(tag);
+
+			Sbody.insertAdjacentElement('beforeend', SbodyElem);
+
+			Sbody.className = 'body';
+			Sbody.setAttribute('style', 'margin: 7px 0 0 0; font-size: 18px');
+
+			var Sinfo = document.createElement('div');
+			Sinfo.className = 'info';
+			Sinfo.insertAdjacentElement('afterbegin', Stitle);
+
+			var Swrap = document.createElement('div');
+			Swrap.className = 'wrap';
+			Swrap.insertAdjacentElement('afterbegin', Sinfo);
+
+			ScloseBtn.insertAdjacentElement('afterend', Sbody);
+			Scontent.insertAdjacentElement('afterbegin', Swrap);
+			ScustomOverlay.setContent(Scontent);
+
+			window.kakao.maps.event.addListener(stationmarker, 'click', function () {
+				ScustomOverlay.setMap(map);
+			});
+		}
+		
+		if (tagmarker != null) {
+			var TcustomOverlay = new window.kakao.maps.CustomOverlay({
+				position: tagmarker.getPosition(),
+			});
+
+			var Tcontent = document.createElement('div');
+
+			var Ttitle = document.createElement('div');
+			Ttitle.innerHTML = 'tag for end point';
+			Ttitle.className = 'title';
+			Ttitle.setAttribute('style', 'background: #82CAFA;');
+
+			var TcloseBtn = document.createElement('button');
+
+			TcloseBtn.onclick = function () {
+				TcustomOverlay.setMap(null);
+			};
+			TcloseBtn.className = 'close';
+			TcloseBtn.type = 'button';
+
+			Ttitle.appendChild(TcloseBtn);
+
+			var Tbody = document.createElement('div');
+			var TbodytextAv = document.createElement('div');
+			TbodytextAv.appendChild(document.createTextNode('Available: O'));
+			Tbody.insertAdjacentElement('beforeend', TbodytextAv);
+
+			var TbodyElem = document.createElement('button');
+			TbodyElem.className = 'btn'
+			TbodyElem.setAttribute('style', 'background: #82CAFA; color : white; margin: 10px 0 0 0; font-size: 18px; padding: 0 22px');
+			TbodyElem.appendChild(document.createTextNode('set this tag to end point'));
+
+			TbodyElem.onclick = () => this.setdest(tag);
+
+			Tbody.insertAdjacentElement('beforeend', TbodyElem);
+
+			Tbody.className = 'body';
+			Tbody.setAttribute('style', 'margin: 7px 0 0 0; font-size: 18px');
+
+			var Tinfo = document.createElement('div');
+			Tinfo.className = 'info';
+
+			Tinfo.insertAdjacentElement('afterbegin', Ttitle);
+
+			var Twrap = document.createElement('div');
+			Twrap.className = 'wrap';
+	
+			Twrap.insertAdjacentElement('afterbegin', Tinfo);
+			TcloseBtn.insertAdjacentElement('afterend', Tbody);
+			Tcontent.insertAdjacentElement('afterbegin', Twrap);
+	
+			TcustomOverlay.setContent(Tcontent);
+
+			window.kakao.maps.event.addListener(tagmarker, 'click', function () {
+				TcustomOverlay.setMap(map);
+			});
+		}
+
+		if (dronemarker != null) {
+			var DcustomOverlay = new window.kakao.maps.CustomOverlay({
+				position: dronemarker.getPosition(),
+			});
+
+			window.kakao.maps.event.addListener(dronemarker, 'click', function () {
+				DcustomOverlay.setMap(map);
+			});
+		}
 	}
 
 	// 마커 이미지 및 크기 지정 
 	// 노드 종류에 따라 지도 위 마커이미지 다르게 표시
-	addMarker(position: any, map: any) {
-		if ( position.kind  === 'drone') var imageSrc = 'https://user-images.githubusercontent.com/68888653/126869406-4d22668f-04df-44e2-a952-6c4f7f9bc15d.png'
-		else if ( position.kind === 'station') var imageSrc = 'https://user-images.githubusercontent.com/68888653/126869445-228df4e6-6496-4597-b12e-7a0dd11a12d8.png'
-		else var imageSrc = 'https://user-images.githubusercontent.com/68888653/126869406-4d22668f-04df-44e2-a952-6c4f7f9bc15d.png'
-		
-		var imageSize = new window.kakao.maps.Size(30 , 35),
+	addstationMarker(position: any, map: any) {
+		if ( position.kind === 'station'){
+			var imageSrc = 'https://user-images.githubusercontent.com/68888653/126869445-228df4e6-6496-4597-b12e-7a0dd11a12d8.png'
+
+			var imageSize = new window.kakao.maps.Size(30 , 40),
 			markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize),
 			//markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
 				marker = new window.kakao.maps.Marker({
@@ -192,17 +280,52 @@ class NodeMap extends Component<NodeMapProps, NodeMapState> {
 				position: position.latlng, // 마커의 위치
 				image: markerImage 
 			});
+			return marker;
+		}
+		return null;
+	}
 
-		// marker.setMap(map); // 지도 위에 마커를 표출합니다
+	addtagMarker(position: any, map: any) {
+		if ( position.kind === 'tag') {
+			var imageSrc = 'https://user-images.githubusercontent.com/68888653/131796807-2d320e22-d43f-4cdb-9925-a367f14aeca2.png'
 	
+
+			var imageSize = new window.kakao.maps.Size(30 , 40),
+			markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize),
+			//markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
+				marker = new window.kakao.maps.Marker({
+				map: map,
+				position: position.latlng, // 마커의 위치
+				image: markerImage 
+			});
+	
+			return marker;
+		}
+		return null;
+	}
+
+	adddroneMarker(position: any, map: any) {
+		if ( position.kind  === 'drone') {
+			var imageSrc = 'https://user-images.githubusercontent.com/68888653/126869406-4d22668f-04df-44e2-a952-6c4f7f9bc15d.png'
+			
+			var imageSize = new window.kakao.maps.Size(30 , 40),
+			markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize),
+			//markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
+				marker = new window.kakao.maps.Marker({
+				map: map,
+				position: position.latlng, // 마커의 위치
+				image: markerImage 
+			});
 		return marker;
+		}
 	}
 
 	render() {
 		var positions = this.state.nodeList.map((node: nodeListElem) => {
 			return {
-				title: node.name.split('-')[1] + '-' + node.name.split('-')[2],
+				title: node.name.split('-')[1],
 				kind: node.name.split('-')[0],
+				id: node.id,
 				content: [
 					'sink : ' + node.sink_id,
 					'id : ' + node.id,

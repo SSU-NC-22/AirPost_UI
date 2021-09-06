@@ -99,8 +99,7 @@ function App(){
             					path="/dashboard"
 								render={props => <Dashboard user={user} {...props} />}
           					/> 
-							<Route path="/confirm" component={DeliveryConfirm} />        
-							<Route path="/result" component={TrackingResult} />   
+							<Route path="/confirm" component={DeliveryConfirm} />           
 							<Route path="/delivery" component={RegisterDelivery} />
 							<Route path="/tracking" component={TrackingDelivery} />
 							<Route path="/login"

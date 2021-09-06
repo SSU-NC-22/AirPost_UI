@@ -158,10 +158,6 @@ class NodeMap extends Component<NodeMapProps, NodeMapState> {
 		content.insertAdjacentElement('afterbegin', wrap);
 
 		customOverlay.setContent(content);
-
-		window.kakao.maps.event.addListener(marker, 'click', function () {
-			customOverlay.setMap(map);
-		});
 	}
 
 	// 마커 이미지 및 크기 지정 
@@ -169,9 +165,9 @@ class NodeMap extends Component<NodeMapProps, NodeMapState> {
 	addMarker(position: any, map: any) {
 		if ( position.kind  === 'drone') var imageSrc = 'https://user-images.githubusercontent.com/68888653/126869406-4d22668f-04df-44e2-a952-6c4f7f9bc15d.png'
 		else if ( position.kind === 'station') var imageSrc = 'https://user-images.githubusercontent.com/68888653/126869445-228df4e6-6496-4597-b12e-7a0dd11a12d8.png'
-		else var imageSrc = 'https://user-images.githubusercontent.com/68888653/126869406-4d22668f-04df-44e2-a952-6c4f7f9bc15d.png'
+		else var imageSrc = 'https://user-images.githubusercontent.com/68888653/131796807-2d320e22-d43f-4cdb-9925-a367f14aeca2.png'
 		
-		var imageSize = new window.kakao.maps.Size(30 , 35),
+		var imageSize = new window.kakao.maps.Size(30 , 40),
 			markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize),
 			//markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
 				marker = new window.kakao.maps.Marker({

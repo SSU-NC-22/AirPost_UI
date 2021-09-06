@@ -1,18 +1,34 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import {DELIVERY_URL} from './defineUrl'
+import TrackingResult from './TrackingResult';
+import CMap from './CMap'
 
 interface TrackingDeliveryState {
 	invoiceNumber:string;
 	numberValid:boolean;
 	submit:boolean;
+
+	srcLat:number;
+	srcLng:number;
+	destLat:number;
+	destLng:number;
+	droneLat:number;
+	droneLng:number;
 }
 
-class TrackingDelivery extends Component<{}, TrackingDeliveryState> {
+class TrackingDelivery extends Component<TrackingDeliveryState> {
 	state:TrackingDeliveryState = {
 		invoiceNumber:'',
 		numberValid:false,
 		submit:false,
+
+		srcLat:0,
+        srcLng:0,
+        destLat:0,
+        destLng:0,
+        droneLat:0,
+        droneLng:0,
 	}
 
 	handleNumberChange= (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,7 +49,7 @@ class TrackingDelivery extends Component<{}, TrackingDeliveryState> {
 	handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
 
-		var url = DELIVERY_URL;
+		var url = DELIVERY_URL + '?orderNumber=' + this.state.invoiceNumber;
 		var data = this.state;
 
 		if (!this.state.numberValid) {
@@ -41,26 +57,20 @@ class TrackingDelivery extends Component<{}, TrackingDeliveryState> {
 			return;
 		}
 
-		fetch(url, {
-			method: 'POST', // or 'PUT'
-			body: JSON.stringify({
-				invoiceNumber: this.state.invoiceNumber,
-			}),
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		})
-			.then((res) => res.json())
-			.then((response) => console.log('Success:', JSON.stringify(response)))
-			.catch((error) => console.error('Error:', error))
-			.then(() => window.location.reload(false));
+		fetch(url)
+			.then((res) => res.json()) 
+			.then((data) =>
+					this.setState({srcLng:data.srcLng, srcLat:data.srcLat, destLng:data.destLng, destLat:data.destLat, droneLng:data.droneLng, droneLat:data.droneLat})
+			)
+			.catch((error) => console.error('Error:', error));
 
 		this.setState({submit:true})
 	};
 
 	render() {
 		if (this.state.numberValid && this.state.submit) {
-			return <Redirect to = {{ pathname:'/result', state:{invoiceNumber:this.state.invoiceNumber}}}></Redirect> 
+			return <TrackingResult nodeList={[]} map= {0} left={0} right={0} up={0} down={0} srcLat={this.state.srcLat} srcLng={this.state.srcLng} destLat={this.state.destLat} destLng={this.state.destLng} droneLat={this.state.droneLat} droneLng={this.state.droneLng}></TrackingResult>
+			//<Redirect to = {{ pathname:'/result', state:{invoiceNumber:this.state.invoiceNumber}}}></Redirect> 
 		}
 		return (
 			<>

@@ -12,14 +12,13 @@ interface RegisterDeliveryState {
 	senderPn:string;
 	recipientName:string;
 	recipientPn:string;
-	destinationTagId:number;
-	destinationTagName:string;
+	sourceList: tagOptionsElem;
+	destList: tagOptionsElem;
 	invoiceNumber:string;
 	sNameValid: boolean;
 	sNumberValid: boolean;
 	rNameValid: boolean;
 	rNumberValid: boolean;
-	destValid: boolean;
 	submit:boolean;
 }
 
@@ -30,14 +29,13 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 		senderPn:'',
 		recipientName:'',
 		recipientPn:'',
-		destinationTagId:0,
-		destinationTagName:'',
+		sourceList:{label:'', id:0},
+		destList:{label:'', id:0},
 		invoiceNumber:'',
 		sNameValid: false,
 		sNumberValid: false,
 		rNameValid: false,
 		rNumberValid: false,
-		destValid: false,
 		submit:false,
 	}
 
@@ -53,6 +51,24 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 			.then((res) => res.json())
 			.then((data) => this.setState({ tagList: data }))
 			.catch((error) => console.error('Error:', error));
+	}
+
+	getsourceList = (data:any) => {
+		var tagList: tagOptionsElem;
+		var tagList = {label:'', id:0};
+		tagList.id = data.id;
+		tagList.label = data.label;
+
+		this.setState({sourceList:data});
+	}
+
+	getdestList = (data:any) => {
+		var tagList: tagOptionsElem;
+		var tagList = {label:'', id:0};
+		tagList.id = data.id;
+		tagList.label = data.label;
+
+		this.setState({destList:data});
 	}
 
 	handleSNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -113,6 +129,7 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 		}
 	};
 
+	/*
 	handleTagChange = (tag: any) => {
 		if ( tag != null) {
 			this.setState({
@@ -128,6 +145,7 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 			});
 		}
 	};
+	*/
 
 	makeInvoiceNumber() {
 		const date = new Date();
@@ -172,7 +190,7 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 		tempNum += tempSeconds;
 		tempNum = String(tempNum);
 
-		this.setState({invoiceNumber:tempNum});
+		return tempNum;
 	}
 
 	handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -197,10 +215,13 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 			alert('Please enter valid type of recipient phone number.');
 			return;
 		}
+
+		/*
 		if (!this.state.destValid) {
 			alert('Please enter destination tag');
 			return;
 		}
+		*/
 
 		// Check whether user really want to submit
 		var submitValid: boolean;
@@ -210,18 +231,20 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 		}
 		this.setState({submit:true})
 
-		this.makeInvoiceNumber();
+		var order_num = this.makeInvoiceNumber();
+		this.setState({invoiceNumber:order_num});
 
 		fetch(url, {
 			method: 'POST', // or 'PUT'
 			body: JSON.stringify({
-				order_num: this.state.invoiceNumber,
+				order_num: order_num,
 				drone_id: 1,
 				src_name: this.state.senderName,
 				src_phone: this.state.senderPn,
 				dest_name: this.state.recipientName,
 				dest_phone: this.state.recipientPn,
-				dest_station_id: this.state.destinationTagId,
+				source_station_id:this.state.sourceList.id,
+				dest_station_id: this.state.destList.id,
 			}),
 			headers: {
 				'Content-Type': 'application/json',
@@ -244,8 +267,8 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 		});
 		*/}
 
-		if(this.state.sNameValid && this.state.rNameValid && this.state.sNameValid && this.state.rNumberValid && this.state.destValid&& this.state.submit) {
-			return <Redirect to = {{ pathname:'/confirm', state:{ senderName:this.state.senderName, senderPn:this.state.senderPn, recipientName:this.state.recipientName, recipientPn:this.state.recipientPn, destinationTagId:this.state.destinationTagId, destinationTagName:this.state.destinationTagName, invoiceNumber:this.state.invoiceNumber}}}></Redirect> 
+		if(this.state.sNameValid && this.state.rNameValid && this.state.sNameValid && this.state.rNumberValid && this.state.submit) {
+			return <Redirect to = {{ pathname:'/confirm', state:{ senderName:this.state.senderName, senderPn:this.state.senderPn, recipientName:this.state.recipientName, recipientPn:this.state.recipientPn, invoiceNumber:this.state.invoiceNumber, sourceList:this.state.sourceList.label, destList:this.state.destList.label}}}></Redirect> 
 			//(<DeliveryConfirm senderName={this.state.senderName} senderPn={this.state.senderPn} recipientName={this.state.recipientName} recipientPn={this.state.recipientPn} destinationTagId={this.state.destinationTagId} destinationTagName={this.state.destinationTagName}></DeliveryConfirm>);
 		}
 
@@ -256,18 +279,20 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 						<CMap
 							healthState={new Map<0, 0>()}
 							batteryState={new Map<0, 0>()}
+							getsourceList={this.getsourceList}
+							getdestList={this.getdestList}
 						></CMap>
 					</div>
-					<div className="form-group" style={{float:"right", marginTop:"80px"}}>
+					<div className="form-group" style={{float:"right", marginTop:"50px"}}>
 						<div style={{marginBottom:"15px", marginLeft:"70px"}}>
 							<img
-    							src={ "https://user-images.githubusercontent.com/68888653/126869406-4d22668f-04df-44e2-a952-6c4f7f9bc15d.png" }
+    							src={ "https://user-images.githubusercontent.com/68888653/131796807-2d320e22-d43f-4cdb-9925-a367f14aeca2.png" }
     							width='30px'
     							height='40px'
 							/>
 							<label style={{marginLeft:"20px", fontWeight:"bold"}}>Tag</label>
 						</div>
-						<div style={{marginBottom:"100px", marginLeft:"70px"}}>
+						<div style={{marginBottom:"60px", marginLeft:"70px"}}>
 							<img
     							src={ "https://user-images.githubusercontent.com/68888653/126869445-228df4e6-6496-4597-b12e-7a0dd11a12d8.png" }
     							width='30px'
@@ -315,14 +340,23 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 							value={this.state.recipientPn}
 							onChange={this.handleRNumberChange}
 						/>
+						<label>Source Station</label>
+							<Select
+								className="basic-select"
+								name="sink"
+								value={this.state.sourceList}
+								classNamePrefix="select"
+								placeholder={"select source"}
+								// onChange={this.handleTagChange}
+							/>
 						<label>Destination Tag</label>
 							<Select
 								className="basic-select"
 								name="sink"
-								options={tagOptions}
+								value={this.state.destList}
 								classNamePrefix="select"
 								placeholder={"select destination"}
-								onChange={this.handleTagChange}
+								// onChange={this.handleTagChange}
 							/>
 					</div>
 					<div style={{float:"right", marginTop:"20px"}}>

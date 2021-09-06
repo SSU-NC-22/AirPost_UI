@@ -114,6 +114,11 @@ class RegisterNode extends Component<{}, RegisterNodeState> {
 				valueList: StationOption,
 				valueValid:true
 			});
+		}
+		if (nodeKind.value == 'tag'){
+			this.setState({
+				valueValid:true,
+			})
 		} 
 	}
 
@@ -248,7 +253,8 @@ class RegisterNode extends Component<{}, RegisterNodeState> {
 
 		let nodeOptions: Array<nodeOptionsElem> = [
 			{ label: 'drone', value: 'drone'}, 
-			{ label: 'station', value: 'station' }, 
+			{ label: 'station', value: 'station' },
+			{ label: 'tag', value: 'tag'}, 
 		];
 		return (
 			<>

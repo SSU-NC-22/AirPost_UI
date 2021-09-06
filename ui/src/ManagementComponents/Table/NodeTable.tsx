@@ -50,9 +50,9 @@ class NodeTable extends Component<NodeTableProps, NodeTableState> {
 		fetch(url)
 			.then((res) => res.json()) 
 			.then((data) =>
-				//page === 1
-					//? this.setState({ nodeList: data.nodes, pages: data.pages })
-					this.setState({ nodeList: data.nodes})
+				page === 1
+					? this.setState({ nodeList: data.nodes, pages: data.pages })
+					: this.setState({ nodeList: data.nodes})
 			)
 			.catch((error) => this.setState({pages:0}));//console.error('Error:', error));
 	}
@@ -116,7 +116,7 @@ class NodeTable extends Component<NodeTableProps, NodeTableState> {
 						{this.state.nodeList.map((node: nodeListElem, idx: number) => (
 							<tr>
 								<th scope="row">{idx}</th>
-								<td>{node.name.split('-')[1] + '-' + node.name.split('-')[2]}</td>
+								<td>{node.name.split('-')[1] + '-' + node.name.split('-')[0]}</td>
 								<td>{node.id}</td>
 								<td>{node.sensor_values.map((sensor: any) => sensor.value_name + ', ')}</td>
 								{this.findNodeState(node.id)}

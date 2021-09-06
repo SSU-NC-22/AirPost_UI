@@ -34,8 +34,10 @@ function DeliveryConfirm(props:any) {
 				<div style={{textAlign:"left", marginLeft:"325px", fontSize:"23px"}}>
                        <label style={{color:"gray"}}>Invoice Number</label>
                        <label style={{marginLeft: "142px"}}>{props.location.state.invoiceNumber}</label><br></br>
+                       <label style={{color:"gray", marginTop:"7px"}}>Source Tag</label>
+                       <label style={{marginLeft:"193px"}}>{props.location.state.sourceList}</label><br></br>
                        <label style={{color:"gray", marginTop:"7px"}}>Destination Tag</label>
-                       <label style={{marginLeft:"147px"}}>{props.location.state.destinationTagName}</label><br></br>
+                       <label style={{marginLeft:"147px"}}>{props.location.state.destList}</label><br></br>
                        <label style={{color:"gray", marginTop:"7px"}}>Sender Name</label>
                        <label style={{marginLeft:"166px"}}>{props.location.state.senderName}</label><br></br>
                        <label style={{color:"gray", marginTop:"7px"}}>Sender Phone Number</label>

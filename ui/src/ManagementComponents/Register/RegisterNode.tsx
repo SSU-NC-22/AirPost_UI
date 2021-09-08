@@ -5,6 +5,8 @@ import {
 	sinkListElem,
 	sinkOptionsElem,
 	locationElem,
+	tagOptionsElem,
+	nodeListElem,
 } from '../../ElemInterface/ElementsInterface';
 import { NODE_URL, SINK_URL} from '../../defineUrl';
 import LarLngPicker from '../LatLngPicker';
@@ -18,10 +20,14 @@ interface RegisterNodeState {
 	kind: string;
 	location: locationElem;
 	sink_id: number;
+	station_id: number;
 	nameValid: boolean;
 	kindValid: boolean;
 	valueValid: boolean;
 	sinkValid: boolean;
+	stationValid: boolean;
+
+	nodeList: Array<nodeListElem>;
 }
 
 interface nodeOptionsElem {
@@ -47,11 +53,15 @@ class RegisterNode extends Component<{}, RegisterNodeState> {
 			alt: 0,
 		},
 		sink_id: 0,
+		station_id: 0,
 
 		nameValid: false,
 		kindValid: false,
 		valueValid: false,
 		sinkValid: false,
+		stationValid: false,
+
+		nodeList: [],
 	};
 	componentDidMount() {
 		this.getsinkList();
@@ -103,7 +113,7 @@ class RegisterNode extends Component<{}, RegisterNodeState> {
 			];
 			this.setState({
 				valueList: DroneOption,
-				valueValid:true
+				valueValid:true,
 			});
 		}
 		if (nodeKind.value == 'station'){
@@ -112,12 +122,14 @@ class RegisterNode extends Component<{}, RegisterNodeState> {
 			];
 			this.setState({
 				valueList: StationOption,
-				valueValid:true
+				valueValid:true,
+				stationValid:true,
 			});
 		}
 		if (nodeKind.value == 'tag'){
 			this.setState({
 				valueValid:true,
+				stationValid:true,
 			})
 		} 
 	}
@@ -142,6 +154,43 @@ class RegisterNode extends Component<{}, RegisterNodeState> {
 				sink_id: sink.id,
 				sinkValid: false,
 			});
+		}
+	};
+
+	handleStationChange = (station: any) => {
+		if (this.state.kind == 'drone')
+		{
+			if (station !== null)
+			{
+				this.setState({
+					station_id: station.id,
+					stationValid: true,
+				});
+			}
+			else
+			{
+				this.setState({
+					station_id: station.id,
+					stationValid: false,
+				});
+			}
+		}
+		else 
+		{
+			if (station !== null)
+			{
+				this.setState({
+					station_id: station.id,
+					stationValid: false,
+				});
+			}
+			else
+			{
+				this.setState({
+					station_id: station.id,
+					stationValid: true,
+				});
+			}
 		}
 	};
 
@@ -211,6 +260,11 @@ class RegisterNode extends Component<{}, RegisterNodeState> {
 			return;
 		}
 
+		if (!this.state.stationValid) {
+			alert('Please confirm station');
+			return;
+		}
+
 		// Check whether user really want to submit
 		var submitValid: boolean;
 		submitValid = window.confirm('Are you sure to register this node?');
@@ -234,6 +288,7 @@ class RegisterNode extends Component<{}, RegisterNodeState> {
 				lng: data.location.lng,
 				sink_id: data.sink_id,
 				sensor_values: data.valueList,
+				station_id: data.station_id,
 			}),
 			headers: {
 				'Content-Type': 'application/json',
@@ -248,6 +303,24 @@ class RegisterNode extends Component<{}, RegisterNodeState> {
 	render() {
 		let sinkOptions: Array<sinkOptionsElem>;
 		sinkOptions = this.state.sinkList.map((val: sinkListElem) => {
+			return { label: val.name, value: val.name, id: val.id };
+		});
+		
+		let nodes: Array<nodeListElem>;
+		let temp: tagOptionsElem;
+		nodes = [];
+		temp = {label:'', id:0};
+
+		for(var i = 0; i < this.state.sinkList.length; i++)
+		{
+			if(this.state.sinkList[i].name == 'station-sink')
+			{
+				nodes = this.state.sinkList[i].nodes;
+			}
+		}
+		
+		let stationOptions: Array<sinkOptionsElem>;
+		stationOptions = nodes.map((val: nodeListElem) => {
 			return { label: val.name, value: val.name, id: val.id };
 		});
 
@@ -368,6 +441,16 @@ class RegisterNode extends Component<{}, RegisterNodeState> {
 											options={sinkOptions}
 											classNamePrefix="select"
 											onChange={this.handleSinkChange}
+										/>
+									</div>
+									<div className="form-group">
+										<label>Select station</label>
+										<Select
+											className="basic-select"
+											name="station"
+											options={stationOptions}
+											classNamePrefix="select"
+											onChange={this.handleStationChange}
 										/>
 									</div>
 									<div className="modal-footer">

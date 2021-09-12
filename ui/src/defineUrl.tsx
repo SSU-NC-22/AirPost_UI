@@ -69,6 +69,12 @@ export const DELIVERY_URL = 'http://'
 	.concat(process.env.REACT_APP_DB_PORT)
 	.concat('/regist/delivery');
 
+export const TRACKING_URL = 'http://'
+	.concat(process.env.REACT_APP_DB_IP)
+	.concat(':')
+	.concat(process.env.REACT_APP_DB_PORT)
+	.concat('/regist/tracking');
+
 export const TAG_URL = 'http://'
 	.concat(process.env.REACT_APP_DB_IP)
 	.concat(':')

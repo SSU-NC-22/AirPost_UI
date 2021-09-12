@@ -238,12 +238,11 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 			method: 'POST', // or 'PUT'
 			body: JSON.stringify({
 				order_num: order_num,
-				drone_id: 1,
 				src_name: this.state.senderName,
 				src_phone: this.state.senderPn,
 				dest_name: this.state.recipientName,
 				dest_phone: this.state.recipientPn,
-				source_station_id:this.state.sourceList.id,
+				src_station_id:this.state.sourceList.id,
 				dest_station_id: this.state.destList.id,
 			}),
 			headers: {
@@ -257,16 +256,6 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 	};
 
 	render() {
-		let tagOptions: Array<tagOptionsElem>;
-		tagOptions = [{label:'EXP', id:0}];
-		{/*
-		tagOptions = this.state.tagList.map((val: tagOptionsElem) => {
-			return {
-				id: val.id,
-			};
-		});
-		*/}
-
 		if(this.state.sNameValid && this.state.rNameValid && this.state.sNameValid && this.state.rNumberValid && this.state.submit) {
 			return <Redirect to = {{ pathname:'/confirm', state:{ senderName:this.state.senderName, senderPn:this.state.senderPn, recipientName:this.state.recipientName, recipientPn:this.state.recipientPn, invoiceNumber:this.state.invoiceNumber, sourceList:this.state.sourceList.label, destList:this.state.destList.label}}}></Redirect> 
 			//(<DeliveryConfirm senderName={this.state.senderName} senderPn={this.state.senderPn} recipientName={this.state.recipientName} recipientPn={this.state.recipientPn} destinationTagId={this.state.destinationTagId} destinationTagName={this.state.destinationTagName}></DeliveryConfirm>);

@@ -280,6 +280,19 @@ class RegisterNode extends Component<{}, RegisterNodeState> {
 			})
 		);
 
+		var kind:string;
+		if (data.kind == 'station')
+		{
+			kind = 'STA';
+		}
+		else if (data.kind == 'drone')
+		{
+			kind = 'DRO' + '-' + data.station_id;
+		}
+		else{
+			kind = 'TAG';
+		}
+
 		fetch(url, {
 			method: 'POST', // or 'PUT'
 			body: JSON.stringify({
@@ -288,7 +301,7 @@ class RegisterNode extends Component<{}, RegisterNodeState> {
 				lng: data.location.lng,
 				sink_id: data.sink_id,
 				sensor_values: data.valueList,
-				station_id: data.station_id,
+				type: kind,
 			}),
 			headers: {
 				'Content-Type': 'application/json',
@@ -320,10 +333,10 @@ class RegisterNode extends Component<{}, RegisterNodeState> {
 		}
 		
 		let stationOptions: Array<sinkOptionsElem>;
-		stationOptions = nodes.map((val: nodeListElem) => {
+		stationOptions = nodes && nodes.map((val: nodeListElem) => {
 			return { label: val.name, value: val.name, id: val.id };
 		});
-
+		
 		let nodeOptions: Array<nodeOptionsElem> = [
 			{ label: 'drone', value: 'drone'}, 
 			{ label: 'station', value: 'station' },

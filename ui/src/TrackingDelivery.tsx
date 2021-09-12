@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import {DELIVERY_URL} from './defineUrl'
+import {TRACKING_URL} from './defineUrl'
 import TrackingResult from './TrackingResult';
 import CMap from './CMap'
 
@@ -47,10 +47,7 @@ class TrackingDelivery extends Component<TrackingDeliveryState> {
 	};
 
 	handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
-		e.preventDefault();
-
-		var url = DELIVERY_URL + '?orderNumber=' + this.state.invoiceNumber;
-		var data = this.state;
+		var url = TRACKING_URL + '/' + this.state.invoiceNumber;
 
 		if (!this.state.numberValid) {
 			alert('Please enter valid invoice number(15 numbers).');
@@ -59,9 +56,7 @@ class TrackingDelivery extends Component<TrackingDeliveryState> {
 
 		fetch(url)
 			.then((res) => res.json()) 
-			.then((data) =>
-					this.setState({srcLng:data.srcLng, srcLat:data.srcLat, destLng:data.destLng, destLat:data.destLat, droneLng:data.droneLng, droneLat:data.droneLat})
-			)
+			.then((data) => this.setState({srcLng:data.srcLng, srcLat:data.srcLat, destLng:data.destLng, destLat:data.destLat, droneLng:data.droneLng, droneLat:data.droneLat}))
 			.catch((error) => console.error('Error:', error));
 
 		this.setState({submit:true})
@@ -69,7 +64,7 @@ class TrackingDelivery extends Component<TrackingDeliveryState> {
 
 	render() {
 		if (this.state.numberValid && this.state.submit) {
-			return <TrackingResult nodeList={[]} map= {0} left={0} right={0} up={0} down={0} srcLat={this.state.srcLat} srcLng={this.state.srcLng} destLat={this.state.destLat} destLng={this.state.destLng} droneLat={this.state.droneLat} droneLng={this.state.droneLng}></TrackingResult>
+			return <TrackingResult srcLat={this.state.srcLat} srcLng={this.state.srcLng} destLat={this.state.destLat} destLng={this.state.destLng} droneLat={this.state.droneLat} droneLng={this.state.droneLng}></TrackingResult>
 			//<Redirect to = {{ pathname:'/result', state:{invoiceNumber:this.state.invoiceNumber}}}></Redirect> 
 		}
 		return (

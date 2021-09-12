@@ -131,7 +131,7 @@ class NodeMap extends Component<NodeMapProps, NodeMapState> {
 		});*/
 
 		var stationmarker = this.addstationMarker(position, map);
-		var dronemarker = this.adddroneMarker(position, map);
+		// var dronemarker = this.adddroneMarker(position, map);
 		var tagmarker = this.addtagMarker(position, map);
 		var tag:tagOptionsElem;
 		tag = {label:'', id:0};
@@ -255,6 +255,7 @@ class NodeMap extends Component<NodeMapProps, NodeMapState> {
 			});
 		}
 
+		/*
 		if (dronemarker != null) {
 			var DcustomOverlay = new window.kakao.maps.CustomOverlay({
 				position: dronemarker.getPosition(),
@@ -264,6 +265,7 @@ class NodeMap extends Component<NodeMapProps, NodeMapState> {
 				DcustomOverlay.setMap(map);
 			});
 		}
+		*/
 	}
 
 	// 마커 이미지 및 크기 지정 

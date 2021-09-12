@@ -1,15 +1,21 @@
 import React, { Component } from 'react';
 import './ManagementComponents/NodeMap.css';
 import {DELIVERY_URL} from './defineUrl';
-import { useHistory, useLocation } from 'react-router-dom';
-import { lchmod } from 'fs';
-import { timeStamp } from 'console';
 import {nodeListElem, value_list_elem} from './ElemInterface/ElementsInterface'
 
 declare global {
 	interface Window {
 		kakao: any;
 	}
+}
+
+interface TrackingResultProps {
+    srcLng:number;
+    srcLat:number;
+    destLng:number;
+    destLat:number;
+    droneLng:number;
+    droneLat:number;
 }
 
 interface TrackingResultState {
@@ -19,15 +25,9 @@ interface TrackingResultState {
 	right: number;
 	up: number;
 	down: number;
-    srcLng:number;
-    srcLat:number;
-    destLng:number;
-    destLat:number;
-    droneLng:number;
-    droneLat:number;
 }
 
-class TrackingResult extends Component<TrackingResultState> {
+class TrackingResult extends Component<TrackingResultProps, TrackingResultState> {
     state: TrackingResultState = {
 		nodeList: [],
 		map: {},
@@ -35,37 +35,33 @@ class TrackingResult extends Component<TrackingResultState> {
 		right: 0,
 		up: 0,
 		down: 0,
-		srcLng:0,
-        srcLat:0,
-        destLng:0,
-        destLat:0,
-        droneLng:0,
-        droneLat:0,
 	};
 	
     componentDidMount = () => {
 		var mapContainer = document.getElementById('node_map'); // 지도를 표시할 div
 		var mapOption = {
 			center: new window.kakao.maps.LatLng(
-				this.state.droneLat,
-				this.state.droneLng
-			), // 지도의 중심좌표
+				37.49575158172499,	
+				126.95633291769067	
+			),  
+			// this.state.droneLng
+			// this.state.droneLat,
+			// 지도의 중심좌표
 			level: 5, // 지도의 확대 레벨
 		};
 
 		// 지도를 생성합니다
 		var map = new window.kakao.maps.Map(mapContainer, mapOption);
-		mapContainer!.style.height = '730px';
-		mapContainer!.style.width = ' 800px';
-		map.relayout();
 		this.setState({ map: map });
 
+		/*
 		this.getnodeList(
 			this.state.left,
 			this.state.right,
 			this.state.up,
 			this.state.down,
 		);
+		*/
 
 		// 드래그가 끝날 때 or 확대 수준이 변경되면
 		window.kakao.maps.event.addListener(map, 'idle', () => {
@@ -85,12 +81,14 @@ class TrackingResult extends Component<TrackingResultState> {
 				down: swLatLng.getLat(), // down
 			});
 
+			/*
 			this.getnodeList(
 				swLatLng.getLng(), // left
 				neLatLng.getLng(), // right
 				neLatLng.getLat(), // up
 				swLatLng.getLat() // down
 			);
+			*/
 		});
 	};
 	

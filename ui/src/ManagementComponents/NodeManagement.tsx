@@ -4,11 +4,13 @@ import NodeTable from './Table/NodeTable';
 import {
 	sinkListElem,
 	nodeHealthCheckElem,
+	locationElem,
 } from '../ElemInterface/ElementsInterface';
 import { HEALTHCHECK_URL, SINK_URL } from '../defineUrl';
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
 import NodeMap from './NodeMap';
 import { clear } from 'console';
+import TrackingDelivery from '../TrackingDelivery';
 
 const client = new W3CWebSocket(HEALTHCHECK_URL);
 
@@ -17,6 +19,7 @@ interface NodeManagementState {
 	nodeState: Array<nodeHealthCheckElem>;
 	healthMap: Map<number, number>;
 	batteryMap: Map<number, number>;
+	LocationMap: locationElem;
 
 	showAllValid: boolean;
 }
@@ -25,12 +28,15 @@ NodeManagement
 - Manage node table, register node
 */
 
+const DroneLocation = React.createContext({});
+
 class NodeManagement extends Component<{}, NodeManagementState> {
 	state: NodeManagementState = {
 		sinkList: [],
 		nodeState: [],
 		healthMap: new Map(),
 		batteryMap: new Map(),
+		LocationMap: {lat:0, lng:0, alt:0},
 
 		showAllValid: true,
 	};
@@ -87,6 +93,10 @@ class NodeManagement extends Component<{}, NodeManagementState> {
 		})
 	}
 
+	getLocationStateMap() {
+		/* To do */ 
+	}
+
 	// node state fetch해오는 코드 없음 ????
 
 	handleAllClick = () => {
@@ -103,6 +113,9 @@ class NodeManagement extends Component<{}, NodeManagementState> {
 	render() {
 		return (
 			<div>
+				<DroneLocation.Provider value={this.state.nodeState}>
+					{/*<TrackingDelivery></TrackingDelivery> To Do */}
+				</DroneLocation.Provider>
 				<div style={{ float: 'right' }}>
 					<button
 						type="button"

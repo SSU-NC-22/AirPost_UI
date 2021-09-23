@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, createContext, useCallback} from 'react';
 import { BrowserRouter as Router, Route, Switch, BrowserRouter, Link } from 'react-router-dom';
 import Nav from './Navigation';
 import NodeManagement from './ManagementComponents/NodeManagement';
-import ActuatorManagement from './ManagementComponents/ActuatorManagement';
 import Dashboard from './KibanaDashboard';
 import Visualize from './KibanaVisualize';
 import Main from './Home';
@@ -10,15 +9,14 @@ import SinkManagement from './ManagementComponents/SinkManagement';
 //import AlertAlarm from './ManagementComponents/AlertAlarm';
 import TopicManagement from './KafkaComponents/Topic/TopicManagement';
 
-import RegisterDelivery from './RegisterDelivery'
-import TrackingDelivery from './TrackingDelivery'
-import DeliveryConfirm from './DeliveryConfirm';
-import TrackingResult from './TrackingResult'
+import RegisterDelivery from './DeliveryManagement/RegisterDelivery'
+import TrackingDelivery from './DeliveryManagement/TrackingDelivery'
+import DeliveryConfirm from './DeliveryManagement/DeliveryConfirm';
 import {signIn} from './LoginInfo/auth.js'
 import AuthRoute from './LoginInfo/AuthRoute.js'
 import LoginForm from './LoginInfo/LoginForm.js'
 import Logoutbutton from './LoginInfo/LogoutButton'
-import NotFound from './NotFound.js'
+import NotFound from './NotFound';
 
 /* 
 App
@@ -26,13 +24,45 @@ App
 - Show navigation bar (Nav)
 - Alert alarm service
 */
+export const locationMap = new Map();
+
+export const LocationContext = createContext({
+	state: { location: locationMap},
+	actions: {
+	  updateLocation: () => {},
+	}
+});
+
+const LocationProvider = ({ children }) => {
+  
+	const [location, setLocation] = useState(new Map());
+	const updateLocation = (key,value) => {
+		setLocation(new Map(location.set(key,value)));
+	}
+
+	const value = {
+	  state:  { location},
+	  actions: { updateLocation}
+	};
+  
+	return (
+	  <LocationContext.Provider value={value}>{children}</LocationContext.Provider>
+	);
+  };
+  
+  const { Consumer: LocationConsumer } = LocationContext;
+  
+  export { LocationProvider, LocationConsumer };
+
 function App(){
 	const [user, setUser] = useState(null);
   	const authenticated = user != null;
 
   	const login = ({ email, password }) => setUser(signIn({ email, password }));
   	const logout = () => setUser(null);
+
 	return (
+		<LocationProvider>
 		<BrowserRouter>
 		<div>
 			<Router>
@@ -50,12 +80,6 @@ function App(){
 								render={props => <SensorManagement user={user} {...props} />}
 							  />
 							*/}
-							<AuthRoute
-								authenticated={authenticated}
-								component = {ActuatorManagement}
-            					path="/actuator"
-								render={props => <ActuatorManagement user={user} {...props} />}
-          					/>
 							<AuthRoute
 								authenticated={authenticated}
 								component = {NodeManagement}
@@ -114,6 +138,7 @@ function App(){
 			</Router>
 		</div>
 		</BrowserRouter>
+		</LocationProvider>
 	);
 }
 export default App;

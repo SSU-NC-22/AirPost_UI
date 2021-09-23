@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState, createContext} from 'react';
 import RegisterNode from './Register/RegisterNode';
 import NodeTable from './Table/NodeTable';
 import {
@@ -9,8 +9,10 @@ import {
 import { HEALTHCHECK_URL, SINK_URL } from '../defineUrl';
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
 import NodeMap from './NodeMap';
-import { clear } from 'console';
-import TrackingDelivery from '../TrackingDelivery';
+import { clear, timeStamp } from 'console';
+import TrackingDelivery from '../DeliveryManagement/TrackingDelivery';
+import { LocationConsumer } from '../App';
+import { toNumber } from 'lodash';
 
 const client = new W3CWebSocket(HEALTHCHECK_URL);
 
@@ -19,24 +21,35 @@ interface NodeManagementState {
 	nodeState: Array<nodeHealthCheckElem>;
 	healthMap: Map<number, number>;
 	batteryMap: Map<number, number>;
-	LocationMap: locationElem;
+	locationMap: Map<number, locationElem>;
 
 	showAllValid: boolean;
 }
+
 /*
 NodeManagement
 - Manage node table, register node
 */
 
-const DroneLocation = React.createContext({});
-
+// export const ColorContext = createContext("black");
+/*
+export const ColorProvider = () => {
+  
+	const [color, setColor] = useState("green");
+	const value = color;
+  
+	return (
+	  <ColorContext.Provider value={value}>{TrackingDelivery}</ColorContext.Provider>
+	);
+};
+*/
 class NodeManagement extends Component<{}, NodeManagementState> {
 	state: NodeManagementState = {
 		sinkList: [],
 		nodeState: [],
 		healthMap: new Map(),
 		batteryMap: new Map(),
-		LocationMap: {lat:0, lng:0, alt:0},
+		locationMap: new Map(),
 
 		showAllValid: true,
 	};
@@ -52,8 +65,9 @@ class NodeManagement extends Component<{}, NodeManagementState> {
 			});
 			this.getHealthStateMap();
 			this.getBatteryStateMap();
+			this.getLocationStateMap();
 		};
-	}
+	};
 
 	componentDidMount() {
 		this.getsinkList();
@@ -94,7 +108,14 @@ class NodeManagement extends Component<{}, NodeManagementState> {
 	}
 
 	getLocationStateMap() {
-		/* To do */ 
+		let map = this.state.locationMap;
+		this.state.nodeState.map((val: nodeHealthCheckElem) => {
+			if(map.has(val.nid) === false) map.set(val.nid, val.location);
+		})
+
+		this.setState({
+			locationMap: map,
+		})
 	}
 
 	// node state fetch해오는 코드 없음 ????
@@ -113,9 +134,13 @@ class NodeManagement extends Component<{}, NodeManagementState> {
 	render() {
 		return (
 			<div>
-				<DroneLocation.Provider value={this.state.nodeState}>
-					{/*<TrackingDelivery></TrackingDelivery> To Do */}
-				</DroneLocation.Provider>
+				<LocationConsumer>
+				{({actions}:any) => (
+					Object.keys(this.state.locationMap).map(key => (
+						actions.updateLocation(key, this.state.locationMap.get(toNumber(key)))
+					))
+				)}
+    			</LocationConsumer>
 				<div style={{ float: 'right' }}>
 					<button
 						type="button"
@@ -200,6 +225,5 @@ class NodeManagement extends Component<{}, NodeManagementState> {
 		);
 	};
 };
-
 
 export default NodeManagement;

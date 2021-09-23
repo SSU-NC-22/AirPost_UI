@@ -71,15 +71,6 @@ class Navigation extends Component {
 										aria-labelledby="navbarDropdown"
 										style={{ background: 'light' }}
 									>
-										{/*
-										<Link
-											className="dropdown-item"
-											to="/sensor"
-											style={{ background: 'light' }}
-										>
-											Sensor
-										</Link>
-										*/}
 										<Link
 											className="dropdown-item"
 											to="/sink"
@@ -93,13 +84,6 @@ class Navigation extends Component {
 											style={{ background: 'light' }}
 										>
 											Node
-										</Link>
-										<Link
-											className="dropdown-item"
-											to="/actuator"
-											style={{ background: 'light' }}
-										>
-											Actuator
 										</Link>
 									</div>
 								</li>

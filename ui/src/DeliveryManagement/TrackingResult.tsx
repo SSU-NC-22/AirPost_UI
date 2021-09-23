@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import '../ManagementComponents/NodeMap.css';
 import {DELIVERY_URL, NODE_URL} from '../defineUrl';
 import {nodeListElem, value_list_elem, nodeHealthCheckElem,} from '../ElemInterface/ElementsInterface'
+import {LocationConsumer} from '../App'
 
 declare global {
 	interface Window {
@@ -14,8 +15,6 @@ interface TrackingResultProps {
     srcLat:number;
     destLng:number;
     destLat:number;
-    droneLng:number;
-    droneLat:number;
 }
 
 interface TrackingResultState {
@@ -25,6 +24,9 @@ interface TrackingResultState {
 	right: number;
 	up: number;
 	down: number;
+
+	droneLng:number;
+    droneLat:number;
 }
 
 class TrackingResult extends Component<TrackingResultProps, TrackingResultState> {
@@ -35,6 +37,9 @@ class TrackingResult extends Component<TrackingResultProps, TrackingResultState>
 		right: 126.9814068917757,
 		up: 37.504736714448086,
 		down: 37.48669801512536,
+
+		droneLng: 0,
+    	droneLat: 0,
 	};
 	componentDidMount = () => {
 		var mapContainer = document.getElementById('node_map'); // 지도를 표시할 div
@@ -215,6 +220,11 @@ class TrackingResult extends Component<TrackingResultProps, TrackingResultState>
 		
         return(
             <div>
+				<LocationConsumer>
+				{({state}:any) => (
+          			<label style={{width: '64px',height: '64px'}}>{state.location.get(3)}</label>
+      			)}
+    		</LocationConsumer>
 				<div>
 					<div id="node_map" style={{ width: '100%', height: '500px' }}></div>
 				</div>

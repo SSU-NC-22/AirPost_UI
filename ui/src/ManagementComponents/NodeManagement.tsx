@@ -113,8 +113,15 @@ class NodeManagement extends Component<{}, NodeManagementState> {
 			if(map.has(val.nid) === false) map.set(val.nid, val.location);
 		})
 
-		this.setState({
-			locationMap: map,
+		this.setState({locationMap: map}, () => {
+			for (let [key, value] of this.state.locationMap) {
+				console.log(key + "  " + value);
+
+			[...this.state.locationMap.entries()].map(entry => (
+				console.log(entry[0]),
+				console.log(entry[1])
+			))
+			}
 		})
 	}
 
@@ -136,8 +143,8 @@ class NodeManagement extends Component<{}, NodeManagementState> {
 			<div>
 				<LocationConsumer>
 				{({actions}:any) => (
-					Object.keys(this.state.locationMap).map(key => (
-						actions.updateLocation(key, this.state.locationMap.get(toNumber(key)))
+					[...this.state.locationMap.entries()].map(entry => (
+						actions.updateLocation(entry[0], entry[1])
 					))
 				)}
     			</LocationConsumer>

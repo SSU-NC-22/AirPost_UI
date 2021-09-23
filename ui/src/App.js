@@ -24,10 +24,9 @@ App
 - Show navigation bar (Nav)
 - Alert alarm service
 */
-export const locationMap = new Map();
 
 export const LocationContext = createContext({
-	state: { location: locationMap},
+	state: { location: new Map()},
 	actions: {
 	  updateLocation: () => {},
 	}
@@ -37,7 +36,8 @@ const LocationProvider = ({ children }) => {
   
 	const [location, setLocation] = useState(new Map());
 	const updateLocation = (key,value) => {
-		setLocation(new Map(location.set(key,value)));
+		location.set(key, value);
+		setLocation(location);
 	}
 
 	const value = {

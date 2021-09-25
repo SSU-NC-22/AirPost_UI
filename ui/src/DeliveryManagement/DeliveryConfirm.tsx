@@ -35,7 +35,7 @@ function DeliveryConfirm(props:any) {
     return(
         <>
 		<div>
-			<div style={{ textAlign:"center", marginTop:"100px"}}>
+			<div style={{ textAlign:"center", marginTop:"70px"}}>
 				<label style={{fontSize:"40px"}}>Delivery registration completed!</label>
                    <hr style={{width:"570px", borderColor:"black"}}></hr><br></br>
 				<div style={{textAlign:"left", marginLeft:"325px", fontSize:"23px"}}>
@@ -51,6 +51,8 @@ function DeliveryConfirm(props:any) {
                        <label style={{marginLeft:"166px"}}>{props.location.state.senderName}</label><br></br>
                        <label style={{color:"gray", marginTop:"7px"}}>Sender Phone Number</label>
                        <label style={{marginLeft:"72px"}}>{props.location.state.senderPn}</label><br></br>
+                       <label style={{color:"gray", marginTop:"7px"}}>Sender Email</label>
+                       <label style={{marginLeft:"172px"}}>{props.location.state.senderEmail}</label><br></br>
                        <label style={{color:"gray", marginTop:"7px"}}>Recipient Name</label>
                        <label style={{marginLeft:"144px"}}>{props.location.state.recipientName}</label><br></br>
                        <label style={{color:"gray", marginTop:"7px"}}>Recipient Phone Number</label>

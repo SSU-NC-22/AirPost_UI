@@ -9,6 +9,7 @@ interface RegisterDeliveryState {
 	tagList: Array <tagOptionsElem>;
 	senderName:string;
 	senderPn:string;
+	senderEmail:string;
 	recipientName:string;
 	recipientPn:string;
 	sourceList: tagOptionsElem;
@@ -26,6 +27,7 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 		tagList:[],
 		senderName:'',
 		senderPn:'',
+		senderEmail:'',
 		recipientName:'',
 		recipientPn:'',
 		sourceList:{label:'', id:0},
@@ -98,6 +100,14 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 		}
 	};
 
+	handleSEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		if (e.target.value.length > 0) {
+			this.setState({
+				senderEmail: e.target.value,
+			});
+		} 
+	};
+
 	handleSNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const phExp = /^[0]{1}[1]{1}[0-1]{1}[0-9]{8}/;
 		if (e.target.value.match(phExp)) {
@@ -127,6 +137,8 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 			});
 		}
 	};
+
+
 
 	/*
 	handleTagChange = (tag: any) => {
@@ -243,6 +255,7 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 				dest_phone: this.state.recipientPn,
 				src_station_id:this.state.sourceList.id,
 				dest_tag_id: this.state.destList.id,
+				email:this.state.senderEmail,
 			}),
 			headers: {
 				'Content-Type': 'application/json',
@@ -256,7 +269,7 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 
 	render() {
 		if(this.state.sNameValid && this.state.rNameValid && this.state.sNameValid && this.state.rNumberValid && this.state.submit) {
-			return <Redirect to = {{ pathname:'/confirm', state:{ senderName:this.state.senderName, senderPn:this.state.senderPn, recipientName:this.state.recipientName, recipientPn:this.state.recipientPn, invoiceNumber:this.state.invoiceNumber, sourceList:this.state.sourceList.label, destList:this.state.destList.label}}}></Redirect> 
+			return <Redirect to = {{ pathname:'/confirm', state:{ senderName:this.state.senderName, senderPn:this.state.senderPn, senderEmail:this.state.senderEmail, recipientName:this.state.recipientName, recipientPn:this.state.recipientPn, invoiceNumber:this.state.invoiceNumber, sourceList:this.state.sourceList.label, destList:this.state.destList.label}}}></Redirect> 
 			//(<DeliveryConfirm senderName={this.state.senderName} senderPn={this.state.senderPn} recipientName={this.state.recipientName} recipientPn={this.state.recipientPn} destinationTagId={this.state.destinationTagId} destinationTagName={this.state.destinationTagName}></DeliveryConfirm>);
 		}
 
@@ -271,22 +284,21 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 							getdestList={this.getdestList}
 						></CMap>
 					</div>
-					<div className="form-group" style={{float:"right", marginTop:"50px"}}>
-						<div style={{marginBottom:"15px", marginLeft:"70px"}}>
-							<img
-    							src={ "https://user-images.githubusercontent.com/68888653/131796807-2d320e22-d43f-4cdb-9925-a367f14aeca2.png" }
-    							width='30px'
-    							height='40px'
-							/>
-							<label style={{marginLeft:"20px", fontWeight:"bold"}}>Tag</label>
-						</div>
-						<div style={{marginBottom:"60px", marginLeft:"70px"}}>
+					<div className="form-group" style={{float:"right", marginTop:"40px"}}>
+						<div style={{marginBottom:"40px"}}>
 							<img
     							src={ "https://user-images.githubusercontent.com/68888653/126869445-228df4e6-6496-4597-b12e-7a0dd11a12d8.png" }
     							width='30px'
     							height='40px'
 							/>
 							<label style={{marginLeft:"20px", fontWeight:"bold"}}>Station</label>
+							<img
+    							src={ "https://user-images.githubusercontent.com/68888653/131796807-2d320e22-d43f-4cdb-9925-a367f14aeca2.png" }
+    							width='30px'
+    							height='40px'
+								style={{marginLeft:"70px"}}
+							/>
+							<label style={{marginLeft:"20px", fontWeight:"bold"}}>Tag</label>
 						</div>
 						<label>Sender Name</label>
 						<input
@@ -307,6 +319,16 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 							style={{marginBottom:"10px"}}
 							value={this.state.senderPn}
 							onChange={this.handleSNumberChange}
+						/>
+						<label>Sender Email</label>
+						<input
+							type="text"
+							className="form-control"
+							name="client_name"
+							placeholder={'Enter your Email'}
+							style={{marginBottom:"10px"}}
+							value={this.state.senderEmail}
+							onChange={this.handleSEmailChange}
 						/>
 						<label>Recipient Name</label>
 						<input

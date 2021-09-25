@@ -68,7 +68,7 @@ class TrackingDelivery extends Component<TrackingDeliveryState> {
 
 	render() {
 		if (this.state.numberValid && this.state.submit) {
-			return <TrackingResult srcLat={this.state.srcLat} srcLng={this.state.srcLng} destLat={this.state.destLat} destLng={this.state.destLng}></TrackingResult>
+			return <TrackingResult srcLat={this.state.srcLat} srcLng={this.state.srcLng} destLat={this.state.destLat} destLng={this.state.destLng} droneNid={this.state.droneNid}></TrackingResult>
 			//<Redirect to = {{ pathname:'/result', state:{invoiceNumber:this.state.invoiceNumber}}}></Redirect> 
 		}
 		return (

@@ -15,6 +15,7 @@ interface TrackingResultProps {
     srcLat:number;
     destLng:number;
     destLat:number;
+	droneNid:number;
 }
 
 interface TrackingResultState {
@@ -45,16 +46,16 @@ class TrackingResult extends Component<TrackingResultProps, TrackingResultState>
 		var mapContainer = document.getElementById('node_map'); // 지도를 표시할 div
 		var mapOption = {
 			center: new window.kakao.maps.LatLng(
-				37.49575158172499,
+				37.495751581724,
 				126.95633291769067
 			), // 지도의 중심좌표
-			level: 3, // 지도의 확대 레벨
+			level: 4, // 지도의 확대 레벨
 		};
 
 		// 지도를 생성합니다
 		var map = new window.kakao.maps.Map(mapContainer, mapOption);
 		mapContainer!.style.height = '800px';
-		mapContainer!.style.width = ' 1000px';
+		mapContainer!.style.width = ' 1100px';
 		map.relayout();
 		this.setState({ map: map });
 
@@ -110,79 +111,28 @@ class TrackingResult extends Component<TrackingResultProps, TrackingResultState>
 			.catch((error) => console.error('Error:', error));
 	}
 
-	displayMarker(position: any, map: any) {
-		// 마커를 생성합니다
-		/*var marker = new window.kakao.maps.Marker({
-			map: map, // 마커를 표시할 지도
-			position: position.latlng, // 마커의 위치
-		});*/
-
-		var marker = this.addMarker(position, map)
-
-		// 마커에 표시할 custom overlay를 생성합니다
-		var customOverlay = new window.kakao.maps.CustomOverlay({
-			position: marker.getPosition(),
-		});
-
-		var content = document.createElement('div');
-		
-		var title = document.createElement('div');
-		title.innerHTML = '';
-		title.className = 'title';
-		title.setAttribute('style', 'background: #82CAFA;')
-		
-		var closeBtn = document.createElement('button');
-
-		closeBtn.onclick = function () {
-			customOverlay.setMap(null);
+	contextMarker(lat: number, lng: number, map: any) {
+		var position = {
+			kind: 'drone',
+			latlng: new window.kakao.maps.LatLng(lat, lng),
 		};
-		closeBtn.className = 'close';
-		closeBtn.type = 'button';
-		
-		title.appendChild(closeBtn);
-		
-		var body = document.createElement('div');
-		var bodytextAv = document.createElement('div');
-		var bodytextBa = document.createElement('div');
-		bodytextAv.appendChild(document.createTextNode('Available: O'));
-		bodytextBa.appendChild(document.createTextNode('Battery: 77%'));
-		body.insertAdjacentElement('beforeend', bodytextAv);
-		body.insertAdjacentElement('beforeend', bodytextBa);
 
-		var bodyElem = document.createElement('button');
-		bodyElem.className = 'btn'
-		bodyElem.setAttribute('style', 'background: #82CAFA; color : white; margin: 0 0 0 130px');
-		bodyElem.appendChild(document.createTextNode('Register Delivery'));
-		body.insertAdjacentElement('beforeend', bodyElem);
-
-		body.className = 'body';
-		body.setAttribute('style', 'margin: 35px 0 0 0');
-
-		var info = document.createElement('div');
-		info.className = 'info';
-		
-		info.insertAdjacentElement('afterbegin', title);
-		
-		var wrap = document.createElement('div');
-		wrap.className = 'wrap';
-		
-		wrap.insertAdjacentElement('afterbegin', info);
-		
-		closeBtn.insertAdjacentElement('afterend', body);
-		
-		content.insertAdjacentElement('afterbegin', wrap);
-
-		customOverlay.setContent(content);
-
-		window.kakao.maps.event.addListener(marker, 'click', function () {
-			customOverlay.setMap(map);
-		});
+		this.addMarker(position, map)
 	}
 
 	addMarker(position: any, map: any) {
-		if ( position.kind  === 'drone') var imageSrc = 'https://user-images.githubusercontent.com/68888653/126869406-4d22668f-04df-44e2-a952-6c4f7f9bc15d.png'
-		else if ( position.kind === 'station') var imageSrc = 'https://user-images.githubusercontent.com/68888653/126869445-228df4e6-6496-4597-b12e-7a0dd11a12d8.png'
-		else var imageSrc = 'https://user-images.githubusercontent.com/68888653/126869406-4d22668f-04df-44e2-a952-6c4f7f9bc15d.png'
+		if ( position.kind  === 'drone'){
+			var imageSrc = 'https://user-images.githubusercontent.com/68888653/126869406-4d22668f-04df-44e2-a952-6c4f7f9bc15d.png';
+			var iwContent = '<div style="padding:0px;">Your Package is <br>here!</div>';
+		} 
+		else if ( position.kind === 'station') {
+			var imageSrc = 'https://user-images.githubusercontent.com/68888653/126869445-228df4e6-6496-4597-b12e-7a0dd11a12d8.png'
+			var iwContent = '<div style="padding:5px;">Station where <br>package was sent</div>';
+		}
+		else {
+			var imageSrc = 'https://user-images.githubusercontent.com/68888653/131796807-2d320e22-d43f-4cdb-9925-a367f14aeca2.png'
+			var iwContent = '<div style="padding:5px;">Tag where <br>to receive package</div>';
+		}
 		
 		var imageSize = new window.kakao.maps.Size(30 , 35),
 			markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize),
@@ -195,38 +145,57 @@ class TrackingResult extends Component<TrackingResultProps, TrackingResultState>
 
 		// marker.setMap(map); // 지도 위에 마커를 표출합니다
 	
+		var infowindow = new window.kakao.maps.InfoWindow({
+			position : position, 
+			content : iwContent 
+		});
+		  
+		// 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
+		infowindow.open(map, marker); 
+
 		return marker;
+	}
+
+	setdroneLocation(lat:any, lng:any) {
+		this.setState({droneLat: lat});
+		this.setState({droneLng: lng});
 	}
 
     render() {
 		
 		var positions = this.state.nodeList.map((node: nodeListElem) => {
 			return {
-				title: node.name.split('-')[1] + '-' + node.name.split('-')[2],
 				kind: node.name.split('-')[0],
-				content: [
-					'sink : ' + node.sink_id,
-					'id : ' + node.id,
-					'sensor : ' +
-						node.sensor_values.map((sensor: value_list_elem) => sensor.value_name+', '),
-				],
 				latlng: new window.kakao.maps.LatLng(node.lat, node.lng),
 			};
 		});
 
 		for (var i = 0; i < positions.length; i++) {
-			this.displayMarker(positions[i], this.state.map);
+			if ((positions[i].latlng).getLat() === this.props.srcLat && (positions[i].latlng).getLng() === this.props.srcLng)
+			{
+				this.addMarker(positions[i], this.state.map);
+			}
+
+			if ((positions[i].latlng).getLat() === this.props.destLat && (positions[i].latlng).getLng() === this.props.destLng)
+			{
+				this.addMarker(positions[i], this.state.map);
+			}
 		}
 		
         return(
             <div>
 				<LocationConsumer>
 				{({state}:any) => (
-          			<label style={{width: '64px',height: '64px'}}>{state.location.get(3)}</label>
+          			[state.location.get(this.props.droneNid)].filter(
+						  (element, i) => element !=null
+					  ).map
+					  (arr => (
+						this.contextMarker(arr[0], arr[1], this.state.map)
+					  ))
       			)}
-    		</LocationConsumer>
+    			</LocationConsumer>
 				<div>
-					<div id="node_map" style={{ width: '100%', height: '500px' }}></div>
+					<div id="node_map" style={{ width: '100%', height: '500px'}}></div>
 				</div>
 			</div>
         );

@@ -40,19 +40,19 @@ class NodeMap extends Component<NodeMapProps, NodeMapState> {
 	state: NodeMapState = {
 		nodeList: [],
 		map: {},
-		left: 126.93120847993194,
-		right: 126.9814068917757,
-		up: 37.504736714448086,
-		down: 37.48669801512536,
+		left: 126.8146287054153,
+		right: 126.94874516871015,
+		up: 37.544991853368245,
+		down: 37.491798077077085,
 	};
 	componentDidMount = () => {
 		var mapContainer = document.getElementById('node_map'); // 지도를 표시할 div
 		var mapOption = {
 			center: new window.kakao.maps.LatLng(
-				37.49575158172499,
-				126.95633291769067
+				37.518442478524676,
+				126.87796326530058
 			), // 지도의 중심좌표
-			level: 3, // 지도의 확대 레벨
+			level: 1, // 지도의 확대 레벨
 		};
 
 		// 지도를 생성합니다

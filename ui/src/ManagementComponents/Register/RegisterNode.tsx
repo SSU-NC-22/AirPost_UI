@@ -109,7 +109,7 @@ class RegisterNode extends Component<{}, RegisterNodeState> {
 
 		if (nodeKind.value == 'drone'){
 			let DroneOption: Array<value_list_elem> = [
-				{ value_name: 'battery'}, {value_name: 'gps'}, {value_name: 'atm'}, {value_name: 'accelerate'}, {value_name: 'speed'}
+				{ value_name: 'lat'}, {value_name: 'long'}, {value_name: 'alt'}, {value_name: 'velocity'}, {value_name: 'battery'}
 			];
 			this.setState({
 				valueList: DroneOption,
@@ -118,7 +118,7 @@ class RegisterNode extends Component<{}, RegisterNodeState> {
 		}
 		if (nodeKind.value == 'station'){
 			let StationOption: Array<value_list_elem> = [
-				{value_name: 'gps'}, {value_name: 'ultrasonic'}
+				{value_name: 'temperature'}, {value_name: 'humidity'}, {value_name: 'light'}, {value_name: 'lat'}, {value_name: 'long'}, {value_name: 'alt'}
 			];
 			this.setState({
 				valueList: StationOption,

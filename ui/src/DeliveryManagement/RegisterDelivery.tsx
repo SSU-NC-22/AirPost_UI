@@ -40,20 +40,6 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 		submit:false,
 	}
 
-	componentDidMount() {
-		this.gettagList();
-	}
-
-	// 현재 출발지에서 도달할 수 있는 tag들을 backend로부터 받아와야 함
-	gettagList() {
-		var url = TAG_URL;
-
-		fetch(url)
-			.then((res) => res.json())
-			.then((data) => this.setState({ tagList: data }))
-			.catch((error) => console.error('Error:', error));
-	}
-
 	getsourceList = (data:any) => {
 		var tagList: tagOptionsElem;
 		var tagList = {label:'', id:0};

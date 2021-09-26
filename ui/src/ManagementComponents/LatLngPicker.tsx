@@ -17,10 +17,10 @@ class LarLngPicker extends Component<LarLngPickerProps, {}> {
 		var mapContainer = document.getElementById('map'); // 지도를 표시할 div
 		var mapOption = {
 			center: new window.kakao.maps.LatLng(
-				37.49575158172499,
-				126.95633291769067
+				37.51894102338016, 
+				126.87650888537839
 			), // 지도의 중심좌표
-			level: 3, // 지도의 확대 레벨
+			level: 2, // 지도의 확대 레벨
 		};
 
 		// 지도를 생성합니다

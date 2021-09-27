@@ -1,8 +1,6 @@
 import React, { Component, useState } from 'react';
 import {
-	value_list_elem,
 	nodeListElem,
-	nodeHealthCheckElem,
 } from '../../ElemInterface/ElementsInterface';
 import { NODE_URL } from '../../defineUrl';
 import Pagination from '../Pagination';

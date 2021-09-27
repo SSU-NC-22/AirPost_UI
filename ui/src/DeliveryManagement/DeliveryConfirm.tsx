@@ -1,18 +1,6 @@
-import { render } from "@testing-library/react";
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { DELIVERY_URL } from "../defineUrl";
-
-/*
-interface DeliveryProps {
-    senderName:string;
-    senderPn:string;
-    recipientName:string;
-    recipientPn:string;
-    destinationTagId:number;
-    destinationTagName:string
-}
-*/
 
 function DeliveryConfirm(props:any) {
     const history = useHistory();

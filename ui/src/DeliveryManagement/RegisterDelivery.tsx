@@ -124,26 +124,6 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 		}
 	};
 
-
-
-	/*
-	handleTagChange = (tag: any) => {
-		if ( tag != null) {
-			this.setState({
-				destinationTagId: tag.id,
-				destinationTagName: tag.label,
-				destValid: true,
-			});
-		} else {
-			this.setState({
-				destinationTagId: tag.id,
-				destinationTagName: tag.lable,
-				destValid: false,
-			});
-		}
-	};
-	*/
-
 	makeInvoiceNumber() {
 		const date = new Date();
 		var tempNum = "";
@@ -213,13 +193,6 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 			return;
 		}
 
-		/*
-		if (!this.state.destValid) {
-			alert('Please enter destination tag');
-			return;
-		}
-		*/
-
 		// Check whether user really want to submit
 		var submitValid: boolean;
 		submitValid = window.confirm('Are you sure to register this delivery?');
@@ -256,7 +229,6 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 	render() {
 		if(this.state.sNameValid && this.state.rNameValid && this.state.sNameValid && this.state.rNumberValid && this.state.submit) {
 			return <Redirect to = {{ pathname:'/confirm', state:{ senderName:this.state.senderName, senderPn:this.state.senderPn, senderEmail:this.state.senderEmail, recipientName:this.state.recipientName, recipientPn:this.state.recipientPn, invoiceNumber:this.state.invoiceNumber, sourceList:this.state.sourceList.label, destList:this.state.destList.label}}}></Redirect> 
-			//(<DeliveryConfirm senderName={this.state.senderName} senderPn={this.state.senderPn} recipientName={this.state.recipientName} recipientPn={this.state.recipientPn} destinationTagId={this.state.destinationTagId} destinationTagName={this.state.destinationTagName}></DeliveryConfirm>);
 		}
 
 		return (
@@ -343,7 +315,6 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 								value={this.state.sourceList}
 								classNamePrefix="select"
 								placeholder={"select source"}
-								// onChange={this.handleTagChange}
 							/>
 						<label>Destination Tag</label>
 							<Select
@@ -352,7 +323,6 @@ class RegisterDelivery extends Component<{},RegisterDeliveryState> {
 								value={this.state.destList}
 								classNamePrefix="select"
 								placeholder={"select destination"}
-								// onChange={this.handleTagChange}
 							/>
 					</div>
 					<div style={{float:"right", marginTop:"20px"}}>

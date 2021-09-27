@@ -10,7 +10,6 @@ import {
 } from '../../ElemInterface/ElementsInterface';
 import { NODE_URL, SINK_URL} from '../../defineUrl';
 import LarLngPicker from '../LatLngPicker';
-// react-select : https://github.com/JedWatson/react-select
 
 interface RegisterNodeState {
 	sinkList: Array<sinkListElem>;

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
 	nodeListElem,
-	nodeHealthCheckElem,
 } from '../../ElemInterface/ElementsInterface';
 import { NODE_URL } from '../../defineUrl';
 

@@ -108,7 +108,6 @@ class NodeMap extends Component<NodeMapProps, NodeMapState> {
 
 	// Make Marker
 	displayMarker(position: any, map: any) {
-		// 마커를 생성합니다
 		/*var marker = new window.kakao.maps.Marker({
 			map: map, // 마커를 표시할 지도
 			position: position.latlng, // 마커의 위치
@@ -169,15 +168,12 @@ class NodeMap extends Component<NodeMapProps, NodeMapState> {
 		
 		var imageSize = new window.kakao.maps.Size(30 , 40),
 			markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize),
-			//markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
 				marker = new window.kakao.maps.Marker({
 				map: map,
 				position: position.latlng, // 마커의 위치
 				image: markerImage 
 			});
 
-		// marker.setMap(map); // 지도 위에 마커를 표출합니다
-	
 		return marker;
 	}
 

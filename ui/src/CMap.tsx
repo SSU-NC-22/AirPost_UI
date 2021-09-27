@@ -10,8 +10,6 @@ import {
 	value_list_elem,
 	nodeHealthCheckElem,
 } from './ElemInterface/ElementsInterface';
-import { makeArray } from 'jquery';
-import { defaultProps } from 'react-select/src/Select';
 
 declare global {
 	interface Window {
@@ -58,7 +56,7 @@ class NodeMap extends Component<NodeMapProps, NodeMapState> {
 		// 지도를 생성합니다
 		var map = new window.kakao.maps.Map(mapContainer, mapOption);
 		mapContainer!.style.height = '730px';
-		mapContainer!.style.width = ' 650px';
+		mapContainer!.style.width = ' 800px';
 		map.relayout();
 		this.setState({ map: map });
 
@@ -124,7 +122,6 @@ class NodeMap extends Component<NodeMapProps, NodeMapState> {
 
 	// Make Marker
 	displayMarker(position: any, map: any) {
-		// 마커를 생성합니다
 		/*var marker = new window.kakao.maps.Marker({
 			map: map, // 마커를 표시할 지도
 			position: position.latlng, // 마커의 위치
@@ -254,18 +251,6 @@ class NodeMap extends Component<NodeMapProps, NodeMapState> {
 				TcustomOverlay.setMap(map);
 			});
 		}
-
-		/*
-		if (dronemarker != null) {
-			var DcustomOverlay = new window.kakao.maps.CustomOverlay({
-				position: dronemarker.getPosition(),
-			});
-
-			window.kakao.maps.event.addListener(dronemarker, 'click', function () {
-				DcustomOverlay.setMap(map);
-			});
-		}
-		*/
 	}
 
 	// 마커 이미지 및 크기 지정 
@@ -276,7 +261,6 @@ class NodeMap extends Component<NodeMapProps, NodeMapState> {
 
 			var imageSize = new window.kakao.maps.Size(30 , 40),
 			markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize),
-			//markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
 				marker = new window.kakao.maps.Marker({
 				map: map,
 				position: position.latlng, // 마커의 위치
@@ -294,7 +278,6 @@ class NodeMap extends Component<NodeMapProps, NodeMapState> {
 
 			var imageSize = new window.kakao.maps.Size(30 , 40),
 			markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize),
-			//markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
 				marker = new window.kakao.maps.Marker({
 				map: map,
 				position: position.latlng, // 마커의 위치
@@ -312,7 +295,6 @@ class NodeMap extends Component<NodeMapProps, NodeMapState> {
 			
 			var imageSize = new window.kakao.maps.Size(30 , 40),
 			markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize),
-			//markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
 				marker = new window.kakao.maps.Marker({
 				map: map,
 				position: position.latlng, // 마커의 위치

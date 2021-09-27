@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import RegisterSink from './Register/RegisterSink';
 import SinkTable from './Table/SinkTable';
 

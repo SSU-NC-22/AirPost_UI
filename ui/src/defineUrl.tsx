@@ -34,13 +34,6 @@ export const KIBANA_DASHBOARDS_URL = 'http://'
 	.concat(':')
 	.concat(process.env.REACT_APP_KIBANA_PORT)
 	.concat('/app/kibana#/dashboards');
-/*
-export const SENSOR_URL = 'http://'
-	.concat(process.env.REACT_APP_DB_IP)
-	.concat(':')
-	.concat(process.env.REACT_APP_DB_PORT)
-	.concat('/regist/sensor');
-*/
 export const NODE_URL = 'http://'
 	.concat(process.env.REACT_APP_DB_IP)
 	.concat(':')
@@ -61,39 +54,31 @@ export const TOPIC_URL = 'http://'
 	.concat(':')
 	.concat(process.env.REACT_APP_DB_PORT)
 	.concat('/regist/topic');
-
-
 export const DELIVERY_URL = 'http://'
 	.concat(process.env.REACT_APP_DB_IP)
 	.concat(':')
 	.concat(process.env.REACT_APP_DB_PORT)
 	.concat('/regist/delivery');
-
 export const TRACKING_URL = 'http://'
 	.concat(process.env.REACT_APP_DB_IP)
 	.concat(':')
 	.concat(process.env.REACT_APP_DB_PORT)
 	.concat('/regist/tracking');
-
 export const TAG_URL = 'http://'
 	.concat(process.env.REACT_APP_DB_IP)
 	.concat(':')
 	.concat(process.env.REACT_APP_DB_PORT)
 	.concat('/regist/tag');
-
-	
 export const LOGICCORE_URL = 'http://'
 	.concat(process.env.REACT_APP_DB_IP)
 	.concat(':')
 	.concat(process.env.REACT_APP_DB_PORT)
 	.concat('/regist/logic');
-
 export const HEALTHCHECK_URL = 'ws://'
 	.concat(process.env.REACT_APP_HEALTHCHECK_IP)
 	.concat(':')
 	.concat(process.env.REACT_APP_HEALTHCHECK_PORT)
 	.concat('/health-check');
-
 export const ALARM_URL = 'ws://'
 	.concat(process.env.REACT_APP_ALARM_IP)
 	.concat(':')

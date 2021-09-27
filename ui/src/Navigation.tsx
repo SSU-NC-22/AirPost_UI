@@ -109,43 +109,8 @@ class Navigation extends Component {
 										>
 											Topic
 										</Link>
-										{/* <Link
-											className="dropdown-item"
-											to="/logicService"
-											style={{ background: 'pink' }}
-										>
-											Logic Service
-										</Link> */}
 									</div>
 								</li>
-								{/*
-								<li className="nav-item dropdown">
-									<NavLink
-										className="nav-item nav-link dropdown-toggle"
-										role="button"
-										data-toggle="dropdown"
-										to="/management"
-										style={{ color : 'white'}}
-									>
-										SERVICE
-									</NavLink>
-									
-									<div
-										className="dropdown-menu"
-										aria-labelledby="navbarDropdown"
-										style={{ background: 'light' }}
-									>
-										<Link
-											className="dropdown-item"
-											to="/logicCore"
-											style={{ background: 'light' }}
-										>
-											Logic core
-										</Link>
-									</div>
-								
-								</li>
-								*/}
 								<li className="nav-item dropdown">
 									<NavLink
 										className="nav-item nav-link dropdown-toggle"

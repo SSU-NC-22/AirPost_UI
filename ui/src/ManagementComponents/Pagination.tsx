@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import './Pagination.css';
 // https://ing-yeo.net/2019/08/react-beginner-3/

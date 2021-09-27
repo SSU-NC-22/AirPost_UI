@@ -11,7 +11,6 @@ import { w3cwebsocket as W3CWebSocket } from 'websocket';
 import NodeMap from './NodeMap';
 import { clear, timeStamp } from 'console';
 import TrackingDelivery from '../DeliveryManagement/TrackingDelivery';
-import { LocationConsumer } from '../App';
 import { toNumber } from 'lodash';
 
 const client = new W3CWebSocket(HEALTHCHECK_URL);
@@ -141,13 +140,6 @@ class NodeManagement extends Component<{}, NodeManagementState> {
 	render() {
 		return (
 			<div>
-				<LocationConsumer>
-				{({actions}:any) => (
-					[...this.state.locationMap.entries()].map(entry => (
-						actions.updateLocation(entry[0], entry[1])
-					))
-				)}
-    			</LocationConsumer>
 				<div style={{ float: 'right' }}>
 					<button
 						type="button"

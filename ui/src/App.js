@@ -6,7 +6,6 @@ import Dashboard from './KibanaDashboard';
 import Visualize from './KibanaVisualize';
 import Main from './Home';
 import SinkManagement from './ManagementComponents/SinkManagement';
-//import AlertAlarm from './ManagementComponents/AlertAlarm';
 import TopicManagement from './KafkaComponents/Topic/TopicManagement';
 
 import RegisterDelivery from './DeliveryManagement/RegisterDelivery'
@@ -25,34 +24,6 @@ App
 - Alert alarm service
 */
 
-export const LocationContext = createContext({
-	state: { location: new Map()},
-	actions: {
-	  updateLocation: () => {},
-	}
-});
-
-const LocationProvider = ({ children }) => {
-  
-	const [location, setLocation] = useState(new Map());
-	const updateLocation = (key,value) => {
-		location.set(key, value);
-		setLocation(location);
-	}
-
-	const value = {
-	  state:  { location},
-	  actions: { updateLocation}
-	};
-  
-	return (
-	  <LocationContext.Provider value={value}>{children}</LocationContext.Provider>
-	);
-  };
-  
-  const { Consumer: LocationConsumer } = LocationContext;
-  
-  export { LocationProvider, LocationConsumer };
 
 function App(){
 	const [user, setUser] = useState(null);
@@ -62,7 +33,6 @@ function App(){
   	const logout = () => setUser(null);
 
 	return (
-		<LocationProvider>
 		<BrowserRouter>
 		<div>
 			<Router>
@@ -138,7 +108,6 @@ function App(){
 			</Router>
 		</div>
 		</BrowserRouter>
-		</LocationProvider>
 	);
 }
 export default App;

@@ -3,6 +3,7 @@ const users = [
     { email: "REDACTED", password: "REDACTED"},
     { email: "REDACTED", password: "REDACTED"},
     { email: "REDACTED", password: "REDACTED"},
+    { email: "REDACTED", password: "REDACTED"},
   ];
   
   export function signIn({ email, password }) {

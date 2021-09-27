@@ -2,8 +2,6 @@ import React, { Component} from 'react';
 import {TRACKING_URL} from '../defineUrl'
 import TrackingResult from './TrackingResult';
 
-import NodeManagement from '../ManagementComponents/NodeManagement'
-
 interface TrackingDeliveryState {
 	invoiceNumber:string;
 	numberValid:boolean;
@@ -69,7 +67,6 @@ class TrackingDelivery extends Component<TrackingDeliveryState> {
 	render() {
 		if (this.state.numberValid && this.state.submit && this.state.droneLat) {
 			return <TrackingResult srcLat={this.state.srcLat} srcLng={this.state.srcLng} destLat={this.state.destLat} destLng={this.state.destLng} droneNid={this.state.droneNid} droneLat={this.state.droneLat} droneLng={this.state.droneLng}></TrackingResult>
-			//<Redirect to = {{ pathname:'/result', state:{invoiceNumber:this.state.invoiceNumber}}}></Redirect> 
 		}
 		return (
 			<>

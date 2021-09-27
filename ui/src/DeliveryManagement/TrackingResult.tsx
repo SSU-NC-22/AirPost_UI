@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import '../ManagementComponents/NodeMap.css';
-import {DELIVERY_URL, NODE_URL} from '../defineUrl';
-import {nodeListElem, value_list_elem, nodeHealthCheckElem,} from '../ElemInterface/ElementsInterface'
+import {NODE_URL} from '../defineUrl';
+import {nodeListElem} from '../ElemInterface/ElementsInterface'
 
 
 declare global {
@@ -133,21 +133,17 @@ class TrackingResult extends Component<TrackingResultProps, TrackingResultState>
 		
 		var imageSize = new window.kakao.maps.Size(30 , 35),
 			markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize),
-			//markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
 				marker = new window.kakao.maps.Marker({
 				map: map,
 				position: position.latlng, // 마커의 위치
 				image: markerImage 
 			});
-
-		// marker.setMap(map); // 지도 위에 마커를 표출합니다
 	
 		var infowindow = new window.kakao.maps.InfoWindow({
 			position : position, 
 			content : iwContent 
 		});
 		  
-		// 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
 		infowindow.open(map, marker); 
 
 		return marker;

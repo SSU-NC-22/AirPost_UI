@@ -1,4 +1,4 @@
-import React, { Component, useState, createContext} from 'react';
+import React, { Component} from 'react';
 import RegisterNode from './Register/RegisterNode';
 import NodeTable from './Table/NodeTable';
 import {
@@ -9,9 +9,6 @@ import {
 import { HEALTHCHECK_URL, SINK_URL } from '../defineUrl';
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
 import NodeMap from './NodeMap';
-import { clear, timeStamp } from 'console';
-import TrackingDelivery from '../DeliveryManagement/TrackingDelivery';
-import { toNumber } from 'lodash';
 
 const client = new W3CWebSocket(HEALTHCHECK_URL);
 
@@ -25,23 +22,6 @@ interface NodeManagementState {
 	showAllValid: boolean;
 }
 
-/*
-NodeManagement
-- Manage node table, register node
-*/
-
-// export const ColorContext = createContext("black");
-/*
-export const ColorProvider = () => {
-  
-	const [color, setColor] = useState("green");
-	const value = color;
-  
-	return (
-	  <ColorContext.Provider value={value}>{TrackingDelivery}</ColorContext.Provider>
-	);
-};
-*/
 class NodeManagement extends Component<{}, NodeManagementState> {
 	state: NodeManagementState = {
 		sinkList: [],
@@ -124,8 +104,6 @@ class NodeManagement extends Component<{}, NodeManagementState> {
 		})
 	}
 
-	// node state fetch해오는 코드 없음 ????
-
 	handleAllClick = () => {
 		this.setState({
 			showAllValid: true,
@@ -184,14 +162,6 @@ class NodeManagement extends Component<{}, NodeManagementState> {
 						<div>
 						{this.state.sinkList.map((sink: sinkListElem, idx: number) => (
 							<div>
-								<span style={{ fontSize: '18pt', fontWeight: 500 }}>
-									{/*아래 조건문은 smartPark에 맞게 하드코딩 되어있는 코드임 지워도 됨*/}
-									{(sink.name === ' Gwangnaru Hangang River' || sink.name === ' Ttukseom Hangang River' || sink.name === ' Jamwon Hangang River' || sink.name === ' Gangseo Hangang River') ? (
-										sink.name.split(' ')[1]
-									) : sink.name.split(' ')[0]
-									}	
-									
-								</span>
 								<button
 									className="btn dropdown-toggle"
 									type="button"

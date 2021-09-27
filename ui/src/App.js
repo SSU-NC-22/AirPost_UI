@@ -1,5 +1,5 @@
-import React, { useState, createContext, useCallback} from 'react';
-import { BrowserRouter as Router, Route, Switch, BrowserRouter, Link } from 'react-router-dom';
+import React, { useState} from 'react';
+import { BrowserRouter as Router, Route, Switch, BrowserRouter} from 'react-router-dom';
 import Nav from './Navigation';
 import NodeManagement from './ManagementComponents/NodeManagement';
 import Dashboard from './KibanaDashboard';
@@ -14,7 +14,6 @@ import DeliveryConfirm from './DeliveryManagement/DeliveryConfirm';
 import {signIn} from './LoginInfo/auth.js'
 import AuthRoute from './LoginInfo/AuthRoute.js'
 import LoginForm from './LoginInfo/LoginForm.js'
-import Logoutbutton from './LoginInfo/LogoutButton'
 import NotFound from './NotFound';
 
 /* 
@@ -38,18 +37,9 @@ function App(){
 			<Router>
 				<div>
 					<Nav></Nav>
-					{/* <AlertAlarm /> */}
 					<div className="container pt-4 mt-4">
 						<Switch>
 							<Route exact path="/" render={Main} />
-							{/*
-							<AuthRoute
-								authenticated={authenticated}
-								component
-            					path="/sensor"
-								render={props => <SensorManagement user={user} {...props} />}
-							  />
-							*/}
 							<AuthRoute
 								authenticated={authenticated}
 								component = {NodeManagement}
@@ -68,21 +58,6 @@ function App(){
             					path="/topic"
 								render={props => <TopicManagement user={user} {...props} />}
           					/>
-							  {/*
-							<AuthRoute
-								authenticated={authenticated}
-								component
-            					path="/logicCore"
-								render={props => <LogicCoreManagement user={user} {...props} />}
-							  />
-							  
-							<AuthRoute
-								authenticated={authenticated}
-								component
-            					path="/registerLogic"
-								render={props => <RegisterLogic user={user} {...props} />}
-							  />
-							  */}
 							<AuthRoute
 								authenticated={authenticated}
             					path="/visualize"

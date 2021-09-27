@@ -1,9 +1,5 @@
 import React, { Component } from 'react';
-import Select from 'react-select';
 import { TOPIC_URL } from '../../defineUrl';
-import { topicListElem, topicOptionsElem } from '../../ElemInterface/ElementsInterface';
-// form : https://getbootstrap.com/docs/4.0/components/forms/?
-// add, delete input : https://codesandbox.io/s/00xq32n3pn?from-embed=&file=/src/index.js
 
 interface RegisterTopicState {
 	name: string;
@@ -14,10 +10,6 @@ interface RegisterTopicState {
 	replicationsValid: boolean;
 }
 
-/* 
-RegisterTopic
-- Show modal to register topic
-*/
 class RegisterTopic extends Component<{}, RegisterTopicState> {
 	state: RegisterTopicState = {
 		name: '',
@@ -46,15 +38,6 @@ class RegisterTopic extends Component<{}, RegisterTopicState> {
 	};
 
     handlePartitionsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        // if (e.target.value > 0) {
-        //     this.setState({
-        //         name: e.target.value,
-        //     });
-        // } else {
-        //     this.setState({
-        //         name: e.target.value,
-        //     });
-        // }
         this.setState({
             partitions: parseInt(e.target.value),
         })

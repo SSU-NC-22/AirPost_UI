@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import { SINK_URL, TOPIC_URL } from '../../defineUrl';
 import { topicListElem, topicOptionsElem } from '../../ElemInterface/ElementsInterface';
-// form : https://getbootstrap.com/docs/4.0/components/forms/?
-// add, delete input : https://codesandbox.io/s/00xq32n3pn?from-embed=&file=/src/index.js
 
 interface RegisterSinkState {
 	topicList: Array<topicListElem>;

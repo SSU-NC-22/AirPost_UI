@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import '../ManagementComponents/NodeMap.css';
 import {DELIVERY_URL, NODE_URL} from '../defineUrl';
 import {nodeListElem, value_list_elem, nodeHealthCheckElem,} from '../ElemInterface/ElementsInterface'
-import {LocationConsumer} from '../App'
+
 
 declare global {
 	interface Window {
@@ -16,6 +16,8 @@ interface TrackingResultProps {
     destLng:number;
     destLat:number;
 	droneNid:number;
+	droneLat:number;
+	droneLng:number;
 }
 
 interface TrackingResultState {
@@ -36,7 +38,8 @@ class TrackingResult extends Component<TrackingResultProps, TrackingResultState>
 		up: 37.544991853368245,
 		down: 37.491798077077085,
 	};
-	componentDidMount = () => {
+
+	componentDidMount() {
 		var mapContainer = document.getElementById('node_map'); // 지도를 표시할 div
 		var mapOption = {
 			center: new window.kakao.maps.LatLng(
@@ -173,16 +176,6 @@ class TrackingResult extends Component<TrackingResultProps, TrackingResultState>
 		
         return(
             <div>
-				<LocationConsumer>
-				{({state}:any) => (
-          			[state.location.get(this.props.droneNid)].filter(
-						  (element, i) => element !=null
-					  ).map
-					  (arr => (
-						this.contextMarker(arr[0], arr[1], this.state.map)
-					  ))
-      			)}
-    			</LocationConsumer>
 				<div>
 					<div id="node_map" style={{ width: '100%', height: '500px'}}></div>
 				</div>

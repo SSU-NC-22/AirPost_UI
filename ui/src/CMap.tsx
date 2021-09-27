@@ -58,7 +58,7 @@ class NodeMap extends Component<NodeMapProps, NodeMapState> {
 		// 지도를 생성합니다
 		var map = new window.kakao.maps.Map(mapContainer, mapOption);
 		mapContainer!.style.height = '730px';
-		mapContainer!.style.width = ' 800px';
+		mapContainer!.style.width = ' 650px';
 		map.relayout();
 		this.setState({ map: map });
 

@@ -1,0 +1,12 @@
+# dependencies / build output (applies to both ui/ and ui-next/)
+node_modules/
+dist/
+dist-ssr/
+build/
+*.local
+
+# editor / OS
+.DS_Store
+*.log
+.env.local
+.env.*.local

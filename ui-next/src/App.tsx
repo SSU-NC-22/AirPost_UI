@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import { AdminDashboard } from "@/pages/AdminDashboard";
+import { KibanaDashboard } from "@/pages/KibanaDashboard";
 import { RegisterParcel } from "@/pages/RegisterParcel";
 import { TrackParcel } from "@/pages/TrackParcel";
 
@@ -11,6 +12,7 @@ export default function App() {
         <Route element={<Layout />}>
           <Route index element={<Navigate to="/admin" replace />} />
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/kibana" element={<KibanaDashboard />} />
           <Route path="/register" element={<RegisterParcel />} />
           <Route path="/track/:trackingNumber" element={<TrackParcel />} />
           <Route path="*" element={<Navigate to="/admin" replace />} />

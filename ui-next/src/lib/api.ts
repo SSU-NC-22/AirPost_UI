@@ -327,6 +327,74 @@ function toTag(n: ApiNode): Tag {
   };
 }
 
+// --- Sinks (admin: Kafka consumers that classify nodes) ------------------
+
+/** A sink as returned by GET /regist/sink (mirrors model.Sink). */
+export interface ApiSink {
+  id: number;
+  name: string;
+  addr: string;
+  topic_id: number;
+}
+
+export async function listSinks(): Promise<ApiSink[]> {
+  if (USE_MOCK) return [];
+  try {
+    return await request<ApiSink[]>("/regist/sink");
+  } catch {
+    return [];
+  }
+}
+
+export async function registSink(sink: {
+  name: string;
+  addr: string;
+  topic_id: number;
+}): Promise<void> {
+  await request<unknown>("/regist/sink", { method: "POST", body: JSON.stringify(sink) });
+}
+
+export async function unregistSink(id: number): Promise<void> {
+  await request<unknown>(`/regist/sink/${id}`, { method: "DELETE" });
+}
+
+// --- Topics (admin: Kafka topics) ----------------------------------------
+
+/** A Kafka topic as returned by GET /regist/topic (mirrors model.Topic). */
+export interface ApiTopic {
+  id: number;
+  name: string;
+  partitions: number;
+  replications: number;
+}
+
+export async function listTopics(): Promise<ApiTopic[]> {
+  if (USE_MOCK) return [];
+  try {
+    return await request<ApiTopic[]>("/regist/topic");
+  } catch {
+    return [];
+  }
+}
+
+export async function registTopic(topic: {
+  name: string;
+  partitions: number;
+  replications: number;
+}): Promise<void> {
+  await request<unknown>("/regist/topic", { method: "POST", body: JSON.stringify(topic) });
+}
+
+export async function unregistTopic(id: number): Promise<void> {
+  await request<unknown>(`/regist/topic/${id}`, { method: "DELETE" });
+}
+
+// --- Node delete (admin) -------------------------------------------------
+
+export async function unregistNode(id: number): Promise<void> {
+  await request<unknown>(`/regist/node/${id}`, { method: "DELETE" });
+}
+
 // --- Mock timeline re-export (for callers without a tracking record) -----
 
 export const fallbackTimeline = mockTimeline;

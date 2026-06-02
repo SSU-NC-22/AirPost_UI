@@ -1,11 +1,12 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { Plane, LayoutDashboard, PackagePlus, MapPin } from "lucide-react";
+import { Plane, LayoutDashboard, PackagePlus, MapPin, BarChart3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const nav = [
   { to: "/admin", label: "Admin", icon: LayoutDashboard },
   { to: "/register", label: "Register Parcel", icon: PackagePlus },
   { to: "/track/AP-DEMO1", label: "Track", icon: MapPin },
+  { to: "/kibana", label: "Sensors", icon: BarChart3 },
 ];
 
 export function Layout() {

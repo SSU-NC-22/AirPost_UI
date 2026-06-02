@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Plane, Building2, Tag as TagIcon, Activity } from "lucide-react";
 import { StatCard } from "@/components/admin/StatCard";
 import { CrudTable, type Column } from "@/components/admin/CrudTable";
+import { AddEntityDialog, type Field } from "@/components/admin/AddEntityDialog";
 import { HealthBadge } from "@/components/HealthBadge";
 import {
   listNodes,
@@ -30,7 +31,6 @@ const sinkCols: Column<ApiSink>[] = [
   { key: "topic_id", header: "Topic ID" },
   { key: "actions", header: "" },
 ];
-
 const topicCols: Column<ApiTopic>[] = [
   { key: "name", header: "Name" },
   { key: "partitions", header: "Partitions" },
@@ -38,12 +38,26 @@ const topicCols: Column<ApiTopic>[] = [
   { key: "actions", header: "" },
 ];
 
+const locFields: Field[] = [
+  { name: "lat", label: "Latitude", type: "number", defaultValue: "37.5" },
+  { name: "lng", label: "Longitude", type: "number", defaultValue: "127.0" },
+  { name: "alt", label: "Altitude (m)", type: "number", defaultValue: "0" },
+];
+
 const EMPTY: NodeGroups = { drones: [], stations: [], tags: [] };
+
+interface DialogConfig {
+  title: string;
+  description?: string;
+  fields: Field[];
+  onSubmit: (v: Record<string, string>) => Promise<void>;
+}
 
 export function AdminDashboard() {
   const [nodes, setNodes] = useState<NodeGroups>(EMPTY);
   const [sinks, setSinks] = useState<ApiSink[]>([]);
   const [topics, setTopics] = useState<ApiTopic[]>([]);
+  const [dialog, setDialog] = useState<DialogConfig | null>(null);
 
   const refresh = useCallback(() => {
     listNodes().then(setNodes).catch(() => setNodes(EMPTY));
@@ -53,55 +67,76 @@ export function AdminDashboard() {
 
   useEffect(refresh, [refresh]);
 
-  // Wrap a mutation so any failure surfaces to the user and the tables re-sync.
-  const run = useCallback(
-    (action: Promise<void>) => {
-      action.then(refresh).catch((e) => alert(`Request failed: ${e.message ?? e}`));
-    },
-    [refresh]
-  );
-
-  const addSink = () => {
-    const name = prompt("Sink name?");
-    if (!name) return;
-    const addr = prompt("Sink address (host:port)?") ?? "";
-    const topic_id = Number(prompt("Topic ID?") ?? "0");
-    run(registSink({ name, addr, topic_id }));
+  // Delete with a confirm; errors surface and the tables re-sync.
+  const del = (action: Promise<void>, label: string) => {
+    if (!confirm(`Delete ${label}?`)) return;
+    action.then(refresh).catch((e) => alert(`Delete failed: ${e.message ?? e}`));
   };
 
-  const addTopic = () => {
-    const name = prompt("Topic name?");
-    if (!name) return;
-    const partitions = Number(prompt("Partitions?", "1") ?? "1");
-    const replications = Number(prompt("Replications?", "1") ?? "1");
-    run(registTopic({ name, partitions, replications }));
-  };
+  // --- "Add" dialogs (the AddEntityDialog awaits onSubmit, shows errors, and closes on success) ---
+  const openSink = () =>
+    setDialog({
+      title: "Add Sink",
+      description: "A Kafka consumer that classifies node data (drone/station/tag).",
+      fields: [
+        { name: "name", label: "Name", placeholder: "drone-sink" },
+        { name: "addr", label: "Address (host:port)", placeholder: "0.0.0.0:5000" },
+        { name: "topic_id", label: "Topic ID", type: "number", defaultValue: "1" },
+      ],
+      onSubmit: (v) =>
+        registSink({ name: v.name, addr: v.addr, topic_id: Number(v.topic_id) }).then(refresh),
+    });
 
-  const delNode = (row: { id: string }) => {
-    if (confirm(`Delete node ${row.id}?`)) run(unregistNode(nodeId(row.id)));
-  };
+  const openTopic = () =>
+    setDialog({
+      title: "Add Kafka Topic",
+      fields: [
+        { name: "name", label: "Name", placeholder: "sensor-data" },
+        { name: "partitions", label: "Partitions", type: "number", defaultValue: "1" },
+        { name: "replications", label: "Replications", type: "number", defaultValue: "1" },
+      ],
+      onSubmit: (v) =>
+        registTopic({
+          name: v.name,
+          partitions: Number(v.partitions),
+          replications: Number(v.replications),
+        }).then(refresh),
+    });
 
-  const askLoc = () => ({
-    lat: Number(prompt("Latitude?", "37.5") ?? "0"),
-    lng: Number(prompt("Longitude?", "127.0") ?? "0"),
-    alt: Number(prompt("Altitude (m)?", "0") ?? "0"),
-  });
+  const openNode = (kind: keyof typeof NODE_KINDS, label: string) => () =>
+    setDialog({
+      title: `Add ${label}`,
+      fields: [{ name: "name", label: "Name", placeholder: `${label.toLowerCase()}-1` }, ...locFields],
+      onSubmit: (v) =>
+        registNode({
+          name: v.name,
+          type: NODE_KINDS[kind].type,
+          lat: Number(v.lat),
+          lng: Number(v.lng),
+          alt: Number(v.alt),
+          sink_id: NODE_KINDS[kind].sink_id,
+        }).then(refresh),
+    });
 
-  // Stations ("STA") and tags ("TAG") are straightforward.
-  const addNode = (kind: keyof typeof NODE_KINDS, label: string) => () => {
-    const name = prompt(`${label} name?`);
-    if (!name) return;
-    run(registNode({ name, type: NODE_KINDS[kind].type, ...askLoc(), sink_id: NODE_KINDS[kind].sink_id }));
-  };
-
-  // A drone is attached to a station: its type must be "DRO-<stationId>".
-  const addDrone = () => {
-    const name = prompt("Drone name?");
-    if (!name) return;
-    const sid = prompt("Attach to which station id?");
-    if (!sid) return;
-    run(registNode({ name, type: `DRO-${sid}`, ...askLoc(), sink_id: DRONE_SINK_ID }));
-  };
+  const openDrone = () =>
+    setDialog({
+      title: "Add Drone",
+      description: "A drone is attached to a station (enter that station's id).",
+      fields: [
+        { name: "name", label: "Name", placeholder: "drone-1" },
+        { name: "stationId", label: "Attach to station id", type: "number" },
+        ...locFields,
+      ],
+      onSubmit: (v) =>
+        registNode({
+          name: v.name,
+          type: `DRO-${v.stationId}`,
+          lat: Number(v.lat),
+          lng: Number(v.lng),
+          alt: Number(v.alt),
+          sink_id: DRONE_SINK_ID,
+        }).then(refresh),
+    });
 
   const droneCols: Column<Drone>[] = [
     { key: "name", header: "Name" },
@@ -150,25 +185,13 @@ export function AdminDashboard() {
         />
       </div>
 
-      <CrudTable title="Drones" addLabel="Add Drone" columns={droneCols} rows={drones} onAdd={addDrone} onDelete={delNode} />
-      <CrudTable title="Stations" addLabel="Add Station" columns={stationCols} rows={stations} onAdd={addNode("station", "Station")} onDelete={delNode} />
-      <CrudTable title="Tags" addLabel="Add Tag" columns={tagCols} rows={tags} onAdd={addNode("tag", "Tag")} onDelete={delNode} />
-      <CrudTable
-        title="Sinks"
-        addLabel="Add Sink"
-        columns={sinkCols}
-        rows={sinks}
-        onAdd={addSink}
-        onDelete={(s) => confirm(`Delete sink ${s.name}?`) && run(unregistSink(s.id))}
-      />
-      <CrudTable
-        title="Kafka Topics"
-        addLabel="Add Topic"
-        columns={topicCols}
-        rows={topics}
-        onAdd={addTopic}
-        onDelete={(t) => confirm(`Delete topic ${t.name}?`) && run(unregistTopic(t.id))}
-      />
+      <CrudTable title="Drones" addLabel="Add Drone" columns={droneCols} rows={drones} onAdd={openDrone} onDelete={(d) => del(unregistNode(nodeId(d.id)), `drone ${d.name}`)} />
+      <CrudTable title="Stations" addLabel="Add Station" columns={stationCols} rows={stations} onAdd={openNode("station", "Station")} onDelete={(s) => del(unregistNode(nodeId(s.id)), `station ${s.name}`)} />
+      <CrudTable title="Tags" addLabel="Add Tag" columns={tagCols} rows={tags} onAdd={openNode("tag", "Tag")} onDelete={(t) => del(unregistNode(nodeId(t.id)), `tag ${t.parcelId}`)} />
+      <CrudTable title="Sinks" addLabel="Add Sink" columns={sinkCols} rows={sinks} onAdd={openSink} onDelete={(s) => del(unregistSink(s.id), `sink ${s.name}`)} />
+      <CrudTable title="Kafka Topics" addLabel="Add Topic" columns={topicCols} rows={topics} onAdd={openTopic} onDelete={(t) => del(unregistTopic(t.id), `topic ${t.name}`)} />
+
+      {dialog && <AddEntityDialog {...dialog} onClose={() => setDialog(null)} />}
     </div>
   );
 }

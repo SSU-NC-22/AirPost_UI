@@ -3,6 +3,7 @@ import { Plane, Building2, Tag as TagIcon, Activity } from "lucide-react";
 import { StatCard } from "@/components/admin/StatCard";
 import { CrudTable, type Column } from "@/components/admin/CrudTable";
 import { AddEntityDialog, type Field } from "@/components/admin/AddEntityDialog";
+import { FleetStatus } from "@/components/admin/FleetStatus";
 import { HealthBadge } from "@/components/HealthBadge";
 import {
   listNodes,
@@ -184,6 +185,8 @@ export function AdminDashboard() {
           hint="online ratio"
         />
       </div>
+
+      <FleetStatus />
 
       <CrudTable title="Drones" addLabel="Add Drone" columns={droneCols} rows={drones} onAdd={openDrone} onDelete={(d) => del(unregistNode(nodeId(d.id)), `drone ${d.name}`)} />
       <CrudTable title="Stations" addLabel="Add Station" columns={stationCols} rows={stations} onAdd={openNode("station", "Station")} onDelete={(s) => del(unregistNode(nodeId(s.id)), `station ${s.name}`)} />

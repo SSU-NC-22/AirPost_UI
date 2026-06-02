@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { MapPlaceholder } from "@/components/user/MapPlaceholder";
+import { LiveMap } from "@/components/user/LiveMap";
 import { DeliveryTimeline } from "@/components/user/DeliveryTimeline";
 import {
   getTracking,
@@ -78,7 +78,7 @@ export function TrackParcel() {
       </Card>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <MapPlaceholder
+        <LiveMap
           tracking={tracking ?? undefined}
           droneCoords={droneCoords}
           live={connected}

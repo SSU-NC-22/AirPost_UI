@@ -9,9 +9,12 @@ import {
   listTopics,
   registSink,
   registTopic,
+  registNode,
   unregistSink,
   unregistTopic,
   unregistNode,
+  NODE_KINDS,
+  DRONE_SINK_ID,
   type NodeGroups,
   type ApiSink,
   type ApiTopic,
@@ -78,6 +81,28 @@ export function AdminDashboard() {
     if (confirm(`Delete node ${row.id}?`)) run(unregistNode(nodeId(row.id)));
   };
 
+  const askLoc = () => ({
+    lat: Number(prompt("Latitude?", "37.5") ?? "0"),
+    lng: Number(prompt("Longitude?", "127.0") ?? "0"),
+    alt: Number(prompt("Altitude (m)?", "0") ?? "0"),
+  });
+
+  // Stations ("STA") and tags ("TAG") are straightforward.
+  const addNode = (kind: keyof typeof NODE_KINDS, label: string) => () => {
+    const name = prompt(`${label} name?`);
+    if (!name) return;
+    run(registNode({ name, type: NODE_KINDS[kind].type, ...askLoc(), sink_id: NODE_KINDS[kind].sink_id }));
+  };
+
+  // A drone is attached to a station: its type must be "DRO-<stationId>".
+  const addDrone = () => {
+    const name = prompt("Drone name?");
+    if (!name) return;
+    const sid = prompt("Attach to which station id?");
+    if (!sid) return;
+    run(registNode({ name, type: `DRO-${sid}`, ...askLoc(), sink_id: DRONE_SINK_ID }));
+  };
+
   const droneCols: Column<Drone>[] = [
     { key: "name", header: "Name" },
     { key: "model", header: "Model" },
@@ -125,9 +150,9 @@ export function AdminDashboard() {
         />
       </div>
 
-      <CrudTable title="Drones" addLabel="Add Drone" columns={droneCols} rows={drones} onDelete={delNode} />
-      <CrudTable title="Stations" addLabel="Add Station" columns={stationCols} rows={stations} onDelete={delNode} />
-      <CrudTable title="Tags" addLabel="Add Tag" columns={tagCols} rows={tags} onDelete={delNode} />
+      <CrudTable title="Drones" addLabel="Add Drone" columns={droneCols} rows={drones} onAdd={addDrone} onDelete={delNode} />
+      <CrudTable title="Stations" addLabel="Add Station" columns={stationCols} rows={stations} onAdd={addNode("station", "Station")} onDelete={delNode} />
+      <CrudTable title="Tags" addLabel="Add Tag" columns={tagCols} rows={tags} onAdd={addNode("tag", "Tag")} onDelete={delNode} />
       <CrudTable
         title="Sinks"
         addLabel="Add Sink"

@@ -91,19 +91,45 @@ export interface HealthFrame {
 // --- Auth token store ----------------------------------------------------
 
 const TOKEN_KEY = "airpost.jwt";
+const ROLE_KEY = "airpost.role";
+const EMAIL_KEY = "airpost.email";
 
 /** Returns the stored JWT, or null if the user is not logged in. */
 export function getToken(): string | null {
   return localStorage.getItem(TOKEN_KEY);
 }
 
-function setToken(token: string): void {
-  localStorage.setItem(TOKEN_KEY, token);
+/** The logged-in user's role ("admin" | "user"), or null if logged out. */
+export function getRole(): string | null {
+  return localStorage.getItem(ROLE_KEY);
 }
 
-/** Clears the stored JWT (logout). */
+/** The logged-in user's email, or null if logged out. */
+export function getEmail(): string | null {
+  return localStorage.getItem(EMAIL_KEY);
+}
+
+/** True when a user is logged in. */
+export function isAuthed(): boolean {
+  return getToken() !== null;
+}
+
+/** True when the logged-in user is an admin. */
+export function isAdmin(): boolean {
+  return getRole() === "admin";
+}
+
+function setSession(token: string, role: string, email: string): void {
+  localStorage.setItem(TOKEN_KEY, token);
+  localStorage.setItem(ROLE_KEY, role);
+  localStorage.setItem(EMAIL_KEY, email);
+}
+
+/** Clears the stored session (logout). */
 export function clearToken(): void {
   localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(ROLE_KEY);
+  localStorage.removeItem(EMAIL_KEY);
 }
 
 // --- Core request helper -------------------------------------------------
@@ -135,25 +161,21 @@ export interface LoginRequest {
 }
 
 /**
- * Logs in and stores the returned JWT for subsequent Bearer auth.
- * In mock mode (or when the auth endpoint is unreachable) a placeholder token
- * is stored so the rest of the UI behaves as if authenticated.
+ * Logs in against /auth/login and stores the JWT + role for subsequent requests.
+ * THROWS on bad credentials (so the login form can show the error) — it no longer
+ * silently falls back to a placeholder token, which previously hid auth failures.
+ * Only VITE_USE_MOCK=true bypasses the backend (for offline UI work).
  */
 export async function login(credentials: LoginRequest): Promise<void> {
   if (USE_MOCK) {
-    setToken("mock-token");
+    setSession("mock-token", "admin", credentials.email);
     return;
   }
-  try {
-    const { token } = await request<{ token: string }>("/auth/login", {
-      method: "POST",
-      body: JSON.stringify(credentials),
-    });
-    setToken(token);
-  } catch {
-    // No auth backend provisioned yet: keep the UI usable with a placeholder.
-    setToken("mock-token");
-  }
+  const { token, role } = await request<{ token: string; role: string }>(
+    "/auth/login",
+    { method: "POST", body: JSON.stringify(credentials) }
+  );
+  setSession(token, role ?? "user", credentials.email);
 }
 
 // --- Delivery (register parcel) ------------------------------------------
@@ -389,7 +411,29 @@ export async function unregistTopic(id: number): Promise<void> {
   await request<unknown>(`/regist/topic/${id}`, { method: "DELETE" });
 }
 
-// --- Node delete (admin) -------------------------------------------------
+// --- Node create / delete (admin) ----------------------------------------
+
+// The backend's RegistNode switches on node.Type[:3]: stations must be "STA", tags "TAG", and
+// drones "DRO-<stationId>" (the drone is attached to that station). Any other type is silently
+// dropped. sink_id classifies the node (matches the seeded sinks above).
+export const NODE_KINDS = {
+  station: { sink_id: SINK_STATION, type: "STA" },
+  tag: { sink_id: SINK_TAG, type: "TAG" },
+} as const;
+
+/** Drone sink id; a drone's type is built as `DRO-<stationId>` by the caller. */
+export const DRONE_SINK_ID = SINK_DRONE;
+
+export async function registNode(node: {
+  name: string;
+  type: string;
+  lat: number;
+  lng: number;
+  alt: number;
+  sink_id: number;
+}): Promise<void> {
+  await request<unknown>("/regist/node", { method: "POST", body: JSON.stringify(node) });
+}
 
 export async function unregistNode(id: number): Promise<void> {
   await request<unknown>(`/regist/node/${id}`, { method: "DELETE" });

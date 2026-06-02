@@ -1,15 +1,34 @@
-import { NavLink, Outlet } from "react-router-dom";
-import { Plane, LayoutDashboard, PackagePlus, MapPin, BarChart3 } from "lucide-react";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import {
+  Plane,
+  LayoutDashboard,
+  PackagePlus,
+  MapPin,
+  BarChart3,
+  LogOut,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getEmail, getRole, isAdmin, clearToken } from "@/lib/api";
 
-const nav = [
-  { to: "/admin", label: "Admin", icon: LayoutDashboard },
+// Everyone can register/track a parcel; only admins manage nodes and see sensors.
+const userNav = [
   { to: "/register", label: "Register Parcel", icon: PackagePlus },
   { to: "/track/AP-DEMO1", label: "Track", icon: MapPin },
+];
+const adminNav = [
+  { to: "/admin", label: "Admin", icon: LayoutDashboard },
   { to: "/kibana", label: "Sensors", icon: BarChart3 },
 ];
 
 export function Layout() {
+  const navigate = useNavigate();
+  const nav = isAdmin() ? [...adminNav, ...userNav] : userNav;
+
+  const logout = () => {
+    clearToken();
+    navigate("/login", { replace: true });
+  };
+
   return (
     <div className="min-h-screen">
       <header className="sticky top-0 z-10 border-b bg-background/80 backdrop-blur">
@@ -38,6 +57,18 @@ export function Layout() {
               </NavLink>
             ))}
           </nav>
+          <div className="ml-auto flex items-center gap-3 text-sm text-muted-foreground">
+            <span className="hidden sm:inline">
+              {getEmail()}
+              {getRole() ? ` · ${getRole()}` : ""}
+            </span>
+            <button
+              onClick={logout}
+              className="flex items-center gap-1 rounded-md px-2 py-1 hover:bg-accent hover:text-accent-foreground"
+            >
+              <LogOut className="h-4 w-4" /> Logout
+            </button>
+          </div>
         </div>
       </header>
       <main className="mx-auto max-w-6xl px-6 py-8">

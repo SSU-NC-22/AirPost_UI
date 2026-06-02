@@ -3,8 +3,10 @@ import { ExternalLink } from "lucide-react";
 // Kibana runs as a separate service (see docker-elasticsearch-kibana + the
 // airpost-sensor-dashboard.ndjson dashboard). We embed it rather than reimplement
 // its visualizations. Point VITE_KIBANA_URL at the dashboard's share/embed URL.
+// Kibana 7.6.x serves the dashboards app at /app/kibana#/dashboards (the bare
+// /app/dashboards path is 7.10+ and shows "application not found" on 7.6).
 const KIBANA_URL =
-  import.meta.env.VITE_KIBANA_URL ?? "http://localhost:5601/app/dashboards";
+  import.meta.env.VITE_KIBANA_URL ?? "http://localhost:5601/app/kibana#/dashboards";
 
 export function KibanaDashboard() {
   return (

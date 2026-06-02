@@ -1,9 +1,6 @@
 const users = [
-    { email: "REDACTED", password: "REDACTED"},
-    { email: "REDACTED", password: "REDACTED"},
-    { email: "REDACTED", password: "REDACTED"},
-    { email: "REDACTED", password: "REDACTED"},
-    { email: "REDACTED", password: "REDACTED"},
+    // SECURITY: plaintext credentials removed. Authenticate server-side (JWT) — see
+    // AirPost/application/rest/handler/auth.go and the new ui-next client (src/lib/api.ts).
   ];
   
   export function signIn({ email, password }) {

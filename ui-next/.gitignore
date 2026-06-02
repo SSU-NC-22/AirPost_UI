@@ -5,3 +5,6 @@ dist-ssr
 .DS_Store
 npm-debug.log*
 .vite
+
+# TypeScript incremental build cache
+*.tsbuildinfo

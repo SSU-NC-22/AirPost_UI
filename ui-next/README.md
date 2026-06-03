@@ -1,7 +1,36 @@
-# AirPost UI (ui-next)
+# AirPost UI — the web app (ui-next)
 
-Modern frontend scaffold for AirPost — **Phase 4** of the ROADMAP. This lives
-alongside the legacy `../ui` (old CRA app) and does **not** replace it yet.
+This is the **web front end** of the [AirPost](https://github.com/jsoone24/NC_AirPost) drone-delivery
+system — the only part a normal user or operator ever touches directly. Everything else (servers,
+drones, data pipeline) sits behind it.
+
+## What it does
+
+The UI serves two kinds of people:
+
+- **Operators / admins** — manage the fleet: add or remove drones, stations and AprilTag tags, see
+  each device's live health, and view telemetry dashboards.
+- **Senders** — register a parcel (pick a source station and a destination), get a **tracking
+  number**, and then watch the drone fly their parcel **live on a map**.
+
+## Where it sits in AirPost
+
+```
+AirPost UI (this app)
+  ├─ REST  ───────────────►  application :8081   (register parcels, manage devices)
+  └─ WebSocket ───────────►  health-check :8085  (live drone positions → the tracking map)
+```
+
+It is a thin, fast client: all the decisions, routing and storage happen in the
+[backend](https://github.com/SSU-NC-22/AirPost_Backend); the UI calls its REST API and subscribes to
+the health-check WebSocket for real-time updates.
+
+> This is the modern **ui-next** app (Vite + React + TypeScript), which supersedes the legacy `../ui`
+> (old CRA app). It is the version shipped in the `docker compose` stack (served on
+> http://localhost:4173).
+
+---
+
 
 ## Stack
 

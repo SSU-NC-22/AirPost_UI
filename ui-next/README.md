@@ -37,10 +37,20 @@ the health-check WebSocket for real-time updates.
 - **Vite 6** + **React 18** + **TypeScript**
 - **Tailwind CSS v4** (via `@tailwindcss/vite`)
 - **shadcn/ui**-style components (`src/components/ui`)
-- **react-router-dom** for routing
-- **lucide-react** icons
+- **react-router-dom** for routing, **lucide-react** icons
+- **Leaflet** + **react-leaflet** for the live map (OpenStreetMap tiles — open-source, no API key)
 
-All data is currently mocked (`src/data/mock.ts`). No backend wiring yet.
+## Backend wiring (live, not mocked)
+
+The app talks to the real backend:
+
+- **REST** to `application` (`VITE_API_BASE`, default `http://localhost:8081`): `/auth/login`,
+  `GET /regist/node`, `POST /regist/delivery`, `GET /regist/tracking/:orderNum`, CRUD on devices.
+- **WebSocket** to `health-check` (`VITE_WS_BASE`, default `ws://localhost:8085/health-check`):
+  live drone coordinates feed the tracking map in real time (`src/lib/useDroneCoords.ts`).
+
+`src/data/mock.ts` is only a **fallback** so the UI still renders when the backend is unreachable
+(or when `VITE_USE_MOCK=true`); it is not the normal data source.
 
 ## Run
 
@@ -51,15 +61,17 @@ npm run dev        # local dev server
 npm run preview    # serve the built bundle
 ```
 
+Configure the backend endpoints via `VITE_API_BASE` / `VITE_WS_BASE` (see `.env` / Vite env).
+
 ## Screens
 
-- `/admin` — Admin dashboard: stat cards, drone/station/tag CRUD tables, health badges.
-- `/register` — User flow: register-parcel form that issues a tracking number.
-- `/track/:trackingNumber` — Live map tracking placeholder + delivery status timeline.
+- `/admin` — Admin dashboard: stat cards, drone/station/tag CRUD tables, live health badges.
+- `/register` — register-parcel form that issues a tracking number.
+- `/track/:trackingNumber` — **live Leaflet/OpenStreetMap tracking** (source, destination and the
+  drone's live position + path) plus the delivery status timeline.
 
-## Next (not done here)
+## Possible next steps
 
-- Swap `MapPlaceholder` for a real map (Leaflet/MapLibre).
-- Wire CRUD + tracking to the backend API.
-- Real-time updates over the health-check WebSocket.
 - Embedded Kibana panels in the admin view.
+- Map polish: drone heading/trail, ETA, clustering for many drones.
+- Customer notifications (push/SMS) and proof-of-delivery.
